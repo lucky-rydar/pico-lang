@@ -3,9 +3,11 @@ project(pico-lang)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories("include" "src")
+include_directories(src)
 
-file(GLOB SRC_FILES "src/*.cpp")
-file(GLOB HEADER_FILES "include/*.h")
+add_subdirectory(test)
+add_subdirectory(lib/googletest)
 
-add_executable(pico-lang ${SRC_FILES} ${HEADER_FILES})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+add_subdirectory(src)
