@@ -1,4 +1,5 @@
 #include <iostream>
+#include "VirtualMachine.h"
 
 using namespace std;
 
