@@ -10,6 +10,11 @@ enum class Instruction
     Add, Sub, Mul, Div
 };
 
+enum class Register
+{
+    A = 256, B, C, D, E, F, G, H
+};
+
 class Parser
 {
 private:
