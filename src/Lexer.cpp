@@ -36,7 +36,7 @@ string Lexer::getDelimiter()
     return this->delimiter;
 }
 
-vector<string> Lexer::parse()
+vector<string> Lexer::getTokens()
 {
     if(input == "")
         return {};

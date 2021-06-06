@@ -24,5 +24,5 @@ public:
     void setDelimiter(string delimiter);
     string getDelimiter();
 
-    vector<string> parse();
+    vector<string> getTokens();
 };

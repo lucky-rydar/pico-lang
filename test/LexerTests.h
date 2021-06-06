@@ -27,7 +27,7 @@ TEST(Lexer, parse1)
     string text = "hello, I am   pico-lang";
     vector<string> expected({"hello", "I", "am", "pico-lang"});
     Lexer l(text);
-    ASSERT_EQ(l.parse(), expected);
+    ASSERT_EQ(l.getTokens(), expected);
 }
 
 TEST(Lexer, parse2)
@@ -35,7 +35,7 @@ TEST(Lexer, parse2)
     string text = "hello, , pico-lang";
     vector<string> expected({"hello", "", "pico-lang"});
     Lexer l(text);
-    ASSERT_EQ(l.parse(), expected);
+    ASSERT_EQ(l.getTokens(), expected);
 }
 
 TEST(Lexer, parse3)
@@ -44,7 +44,7 @@ TEST(Lexer, parse3)
     vector<string> expected({});
     Lexer l(text);
     
-    ASSERT_EQ(l.parse(), expected);
+    ASSERT_EQ(l.getTokens(), expected);
 }
 
 TEST(Lexer, parse4)
@@ -52,5 +52,5 @@ TEST(Lexer, parse4)
     string text = "Hello,\nI am\npico-lang";
     vector<string> expected({"Hello", "I", "am", "pico-lang"});
     Lexer l(text);
-    ASSERT_EQ(l.parse(), expected);
+    ASSERT_EQ(l.getTokens(), expected);
 }
