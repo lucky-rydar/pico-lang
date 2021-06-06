@@ -4,7 +4,10 @@ file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
 
 set(SOURCES ${TEST_SOURCES})
 
-include_directories("../lib/googletest/googletest/include")
+set(SRC_DIR "../src")
+set(GTEST_LIB_DIR "../lib/googletest/googletest/include")
+
+include_directories(${GTEST_LIB_DIR} ${SRC_DIR})
 
 add_executable(${BINARY} ${TEST_SOURCES})
 

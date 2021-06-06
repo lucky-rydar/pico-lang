@@ -16,6 +16,7 @@ private:
 public:
     Lexer();
     Lexer(string input);
+    Lexer(string input, string delimiter);
 
     void setInput(string input);
     string getInput();
