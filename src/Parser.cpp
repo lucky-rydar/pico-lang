@@ -20,7 +20,9 @@ vector<string> Parser::getTokens()
     return this->tokens;
 }
 
-vector<Instruction> Parser::getBytes()
+vector<Instruction> Parser::parse()
 {
-    return {};
+    vector<Instruction> res;
+
+    return res;
 }

@@ -1,17 +1,21 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <map>
 
 using namespace std;
 
 enum class Instruction
 {
+    // memory
     Push = 1, Pop, Set,
-    Add, Sub, Mul, Div
-};
 
-enum class Register
-{
+    // math
+    Add, Sub, Mul, Div,
+
+    Stop,
+
+    // registers
     A = 256, B, C, D, E, F, G, H
 };
 
@@ -19,6 +23,7 @@ class Parser
 {
 private:
     vector<string> tokens;
+    map<string, Instruction> instrByToken;
 public:
     Parser();
     Parser(vector<string> tokens);
@@ -26,5 +31,5 @@ public:
     void setTokens(vector<string> tokens);
     vector<string> getTokens();
 
-    vector<Instruction> getBytes();
+    vector<Instruction> parse();
 };
