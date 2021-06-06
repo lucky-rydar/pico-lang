@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "LexerTests.h"
+#include "ParserTests.h"
 
 int main(int argc, char** argv)
 {

@@ -2,25 +2,25 @@
 
 Parser::Parser()
 {
-
+    this->tokens = {};
 }
 
 Parser::Parser(vector<string> tokens)
 {
-
+    this->tokens = tokens;
 }
 
-void setTokens(vector<string> tokens)
+void Parser::setTokens(vector<string> tokens)
 {
-
+    this->tokens = tokens;
 }
 
-vector<string> getTokens()
+vector<string> Parser::getTokens()
+{
+    return this->tokens;
+}
+
+vector<Instruction> Parser::getBytes()
 {
     return {};
-}
-
-vector<Instruction> getBytes()
-{
-    
 }
