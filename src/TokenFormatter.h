@@ -19,6 +19,7 @@ class TokenFormatter
 private:
     typedef ArgumentParser ArgPars;
     vector<string> sourceTokens;
+    vector<string> resTokens;
     map<string, function<void(size_t)>> formatters;
     map<string, int> tokenSize;
 

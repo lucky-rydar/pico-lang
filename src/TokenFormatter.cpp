@@ -12,12 +12,13 @@ TokenFormatter::TokenFormatter()
 
 TokenFormatter::TokenFormatter(vector<string> sourceTokens) : TokenFormatter()
 {
-    this->sourceTokens = sourceTokens;
+    setSource(sourceTokens);
 }
 
 void TokenFormatter::setSource(vector<string> sourceTokens)
 {
     this->sourceTokens = sourceTokens;
+    this->resTokens = sourceTokens;
 }
 
 vector<string> TokenFormatter::format()
@@ -34,10 +35,7 @@ vector<string> TokenFormatter::format()
         i++;
     }
     
-    auto res = sourceTokens;
-    sourceTokens = {};
-    
-    return res;
+    return resTokens;
 }
 
 void TokenFormatter::formatPush(size_t index)
@@ -55,9 +53,9 @@ void TokenFormatter::formatPush(size_t index)
     }
 
     if(ArgPars::isRegister(arg))
-        sourceTokens[index] = "push_reg";
+        resTokens[index] = "push_reg";
     if(ArgPars::isValue(arg))
-        sourceTokens[index] = "push_val";
+        resTokens[index] = "push_val";
 }
 
 void TokenFormatter::formatSet(size_t index)
@@ -76,7 +74,7 @@ void TokenFormatter::formatSet(size_t index)
     }
 
     if(ArgPars::isRegister(arg2))
-        sourceTokens[index] = "set_reg";
+        resTokens[index] = "set_reg";
     else if(ArgPars::isValue(arg2))
-        sourceTokens[index] = "set_val";
+        resTokens[index] = "set_val";
 }
