@@ -1,6 +1,11 @@
 #pragma once
+#include <map>
+#include <regex>
 #include <vector>
 #include <iostream>
+#include <functional>
+
+#include "ArgumentParser.h"
 
 using namespace std;
 
@@ -12,7 +17,13 @@ using namespace std;
 class TokenFormatter
 {
 private:
+    typedef ArgumentParser ArgPars;
     vector<string> sourceTokens;
+    map<string, function<void(size_t)>> formatters;
+    map<string, int> tokenSize;
+
+    void formatPush(size_t index);
+    void formatSet(size_t index);
 public:
     TokenFormatter();
     TokenFormatter(vector<string> sourceTokens);
