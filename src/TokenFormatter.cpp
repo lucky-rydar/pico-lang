@@ -27,10 +27,12 @@ vector<string> TokenFormatter::format()
     {
         if(formatters.find(sourceTokens[i]) != formatters.end())
         {
-            formatters[sourceTokens[i]](i);
-            i += tokenSize[sourceTokens[i]];
-            
-            continue;
+            try
+            {
+                formatters[sourceTokens[i]](i);
+                i += tokenSize[sourceTokens[i]];    
+            }
+            catch(const std::out_of_range) { }
         }
         i++;
     }
@@ -42,16 +44,12 @@ void TokenFormatter::formatPush(size_t index)
 {
     string in, arg; // instruction and argument
     
-    try
-    {
-        in = this->sourceTokens[index];
-        arg = this->sourceTokens[index+1];
-    }
-    catch(std::exception)
-    {
-        throw std::runtime_error("not enough arguments");
-    }
-
+    if(index >= sourceTokens.size() || index + 1 >= sourceTokens.size())
+        throw std::out_of_range("not enaugh arguments");
+    
+    in = this->sourceTokens[index];
+    arg = this->sourceTokens[index+1];
+    
     if(ArgPars::isRegister(arg))
         resTokens[index] = "push_reg";
     if(ArgPars::isValue(arg))
@@ -62,17 +60,13 @@ void TokenFormatter::formatSet(size_t index)
 {
     string in, arg1, arg2;
 
-    try
-    {
-        in = this->sourceTokens[index];
-        arg1 = this->sourceTokens[index+1];
-        arg2 = this->sourceTokens[index+2];
-    }
-    catch(std::exception)
-    {
-        throw std::runtime_error("not enough arguments");
-    }
-
+    if(index >= sourceTokens.size() || index + 1 >= sourceTokens.size() || index + 2 >= sourceTokens.size())
+        throw std::out_of_range("not enaugh arguments");
+    
+    in = this->sourceTokens[index];
+    arg1 = this->sourceTokens[index+1];
+    arg2 = this->sourceTokens[index+2];
+    
     if(ArgPars::isRegister(arg2))
         resTokens[index] = "set_reg";
     else if(ArgPars::isValue(arg2))
