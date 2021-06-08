@@ -2,7 +2,7 @@
 
 bool ArgumentParser::isValue(string token)
 {
-    regex val("([0-9]+)");
+    regex val("(-?[0-9]+)");
     return regex_match(token, val);
 }
 
