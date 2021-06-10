@@ -32,5 +32,10 @@ Math instructions takes values from stack and the result will be pushed to stack
 
 * stack (for using stack you have two instructions: push, pop)
 * registers (to set value you can use "set" instruction and to get value from register just type %<register name>)
-* static memory (when you type as an argument some number on compile time it will be save at the end of compiled file and got special address)
+* static memory (when you type as an argument some number on compile time it will be saved at the end of compiled file and got special address)
 
+### Compiled file structure
+
+* metadata
+* instructions
+* static memory
