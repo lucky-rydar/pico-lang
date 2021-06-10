@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <iostream>
 #include <vector>
 #include <map>
@@ -8,7 +9,7 @@ using namespace std;
 enum class Instruction
 {
     // memory
-    PushReg = 1, PushVal, SetReg, SetVal, Pop,
+    Push, Set, Pop,
 
     // math
     Add, Sub, Mul, Div,
@@ -24,6 +25,18 @@ class Parser
 private:
     vector<string> tokens;
     map<string, Instruction> instrByToken;
+    map<string, function<void(vector<Instruction>&, int &index)>> parserByToken;
+
+    void parsePush(vector<Instruction>& ins, int &index);
+    void parsePop(vector<Instruction>& ins, int &index);
+    void parseSet(vector<Instruction>& ins, int &index);
+    
+    void parseAdd(vector<Instruction>& ins, int &index);
+    void parseSub(vector<Instruction>& ins, int &index);
+    void parseMul(vector<Instruction>& ins, int &index);
+    void parseDiv(vector<Instruction>& ins, int &index);
+
+    void parseStop(vector<Instruction>& ins, int index);
 public:
     Parser();
     Parser(vector<string> tokens);
