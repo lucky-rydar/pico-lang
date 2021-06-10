@@ -4,7 +4,7 @@
 TEST(Lexer, Lexer1)
 {
     Lexer l;
-    ASSERT_EQ(l.getDelimiter(), "(?:[\n\\s]*\\,[\n\\s]*)|(?:[\n\\s]+)");
+    ASSERT_EQ(l.getDelimiter(), "(?:[\n\\s\r\t]*\\,[\n\\s\r\t]*)|(?:[\n\\s\r\t]+)");
     ASSERT_EQ(l.getInput(), "");
 }
 
@@ -12,7 +12,6 @@ TEST(Lexer, Lexer2)
 {
     Lexer l("secret input");
     ASSERT_EQ(l.getInput(), "secret input");
-    ASSERT_EQ(l.getDelimiter(), "(?:[\n\\s]*\\,[\n\\s]*)|(?:[\n\\s]+)");
 }
 
 TEST(Lexer, Lexer3)
