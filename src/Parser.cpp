@@ -61,6 +61,9 @@ vector<int> Parser::parse()
         }
     }
 
+    compiled.insert(compiled.begin(), compiled.size()+1);
+    compiled.insert(compiled.end(), staticMem.begin(), staticMem.end());
+    
     return compiled;
 }
 
