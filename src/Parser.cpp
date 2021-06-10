@@ -4,16 +4,25 @@ Parser::Parser()
 {
     this->tokens = {};
 
-    parserByToken["push"] = bind(&Parser::parsePush, this, std::placeholders::_1, std::placeholders::_2);
-    parserByToken["pop"] = bind(&Parser::parsePop, this, std::placeholders::_1, std::placeholders::_2);
-    parserByToken["set"] = bind(&Parser::parseSet, this, std::placeholders::_1, std::placeholders::_2);
+    parserByToken["push"] = bind(&Parser::parsePush, this, std::placeholders::_1);
+    parserByToken["pop"] = bind(&Parser::parsePop, this, std::placeholders::_1);
+    parserByToken["set"] = bind(&Parser::parseSet, this, std::placeholders::_1);
 
-    parserByToken["add"] = bind(&Parser::parseAdd, this, std::placeholders::_1, std::placeholders::_2);
-    parserByToken["sub"] = bind(&Parser::parseSub, this, std::placeholders::_1, std::placeholders::_2);
-    parserByToken["mul"] = bind(&Parser::parseMul, this, std::placeholders::_1, std::placeholders::_2);
-    parserByToken["div"] = bind(&Parser::parseDiv, this, std::placeholders::_1, std::placeholders::_2);
+    parserByToken["add"] = bind(&Parser::parseAdd, this, std::placeholders::_1);
+    parserByToken["sub"] = bind(&Parser::parseSub, this, std::placeholders::_1);
+    parserByToken["mul"] = bind(&Parser::parseMul, this, std::placeholders::_1);
+    parserByToken["div"] = bind(&Parser::parseDiv, this, std::placeholders::_1);
 
-    parserByToken["stop"] = bind(&Parser::parseStop, this, std::placeholders::_1, std::placeholders::_2);
+    parserByToken["stop"] = bind(&Parser::parseStop, this, std::placeholders::_1);
+
+    registerByToken["%A"] = Instruction::A;
+    registerByToken["%B"] = Instruction::B;
+    registerByToken["%C"] = Instruction::C;
+    registerByToken["%D"] = Instruction::D;
+    registerByToken["%E"] = Instruction::E;
+    registerByToken["%F"] = Instruction::F;
+    registerByToken["%G"] = Instruction::G;
+    registerByToken["%H"] = Instruction::H;
 }
 
 Parser::Parser(vector<string> tokens) : Parser()
@@ -31,49 +40,107 @@ vector<string> Parser::getTokens()
     return this->tokens;
 }
 
-vector<Instruction> Parser::parse()
+vector<int> Parser::parse()
 {
-    vector<Instruction> res;
+    for(int i = 0; i < tokens.size(); i++)
+    {
+        if(parserByToken.find(tokens[i]) != parserByToken.end())
+        {
+            try
+            {
+                parserByToken[tokens[i]](i);
+            }
+            catch(runtime_error)
+            {
+                throw;
+            }
+        }
+        else
+        {
+            throw runtime_error(string("token '") + tokens[i] + "' is not expected");
+        }
+    }
 
-    return res;
+    return compiled;
 }
 
-void parsePush(vector<Instruction>& ins, int &index)
-{
+void Parser::parsePush(int &index)
+{ 
+    if(index >= tokens.size() || index + 1 >= tokens.size())
+        throw runtime_error("out o frange"); 
 
+    string ins = tokens[index];
+    string arg = tokens[index+1];
+    
+    compiled.push_back((int)Instruction::Push);
+
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        compiled.push_back((int)registerByToken[arg]);
+    }
+    else if(ArgPars::isValue(arg))
+    {
+        ensureIntValid(arg);
+        int value = stoi(arg);
+        
+        staticMem.push_back(value);
+        compiled.push_back(staticMem.size() - 1);
+    }
+    else
+    {
+        throw runtime_error("unknown argument '" + arg + "'");
+    }
+
+
+    index += 3;
 }
 
-void parsePop(vector<Instruction>& ins, int &index)
+void Parser::parsePop(int &index)
 {
     
 }
 
-void parseSet(vector<Instruction>& ins, int &index)
+void Parser::parseSet(int &index)
 {
     
 }
 
-void parseAdd(vector<Instruction>& ins, int &index)
+void Parser::parseAdd(int &index)
 {
     
 }
 
-void parseSub(vector<Instruction>& ins, int &index)
+void Parser::parseSub(int &index)
 {
     
 }
 
-void parseMul(vector<Instruction>& ins, int &index)
+void Parser::parseMul(int &index)
 {
     
 }
 
-void parseDiv(vector<Instruction>& ins, int &index)
+void Parser::parseDiv(int &index)
 {
     
 }
 
-void parseStop(vector<Instruction>& ins, int &index)
+void Parser::parseStop(int &index)
 {
     
+}
+
+void Parser::ensureIntValid(string val)
+{
+    try
+    {
+        stoi(val);
+    }
+    catch(exception)
+    {
+        throw runtime_error("value '" + val + "' is invalid");
+    }   
 }

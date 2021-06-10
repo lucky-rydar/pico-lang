@@ -4,12 +4,14 @@
 #include <vector>
 #include <map>
 
+#include "ArgumentParser.h"
+
 using namespace std;
 
 enum class Instruction
 {
     // memory
-    Push, Set, Pop,
+    Push = 1, Set, Pop,
 
     // math
     Add, Sub, Mul, Div,
@@ -17,26 +19,34 @@ enum class Instruction
     Stop,
 
     // registers
-    A = 256, B, C, D, E, F, G, H
+    A = -1, B = -2, C = -3, D = -4, 
+    E = -5, F = -6, G = -7, H = -8
 };
 
 class Parser
 {
+    typedef ArgumentParser ArgPars;
 private:
     vector<string> tokens;
-    map<string, Instruction> instrByToken;
-    map<string, function<void(vector<Instruction>&, int &index)>> parserByToken;
+    map<string, Instruction> registerByToken;
 
-    void parsePush(vector<Instruction>& ins, int &index);
-    void parsePop(vector<Instruction>& ins, int &index);
-    void parseSet(vector<Instruction>& ins, int &index);
+    map<string, function<void(int &index)>> parserByToken;
     
-    void parseAdd(vector<Instruction>& ins, int &index);
-    void parseSub(vector<Instruction>& ins, int &index);
-    void parseMul(vector<Instruction>& ins, int &index);
-    void parseDiv(vector<Instruction>& ins, int &index);
+    vector<int> compiled;
+    vector<int> staticMem;
 
-    void parseStop(vector<Instruction>& ins, int index);
+private:
+    void parsePush(int &index);
+    void parsePop(int &index);
+    void parseSet(int &index);
+    
+    void parseAdd(int &index);
+    void parseSub(int &index);
+    void parseMul(int &index);
+    void parseDiv(int &index);
+
+    void parseStop(int &index);
+
 public:
     Parser();
     Parser(vector<string> tokens);
@@ -44,5 +54,7 @@ public:
     void setTokens(vector<string> tokens);
     vector<string> getTokens();
 
-    vector<Instruction> parse();
+    vector<int> parse();
+
+    static void ensureIntValid(string val);
 };
