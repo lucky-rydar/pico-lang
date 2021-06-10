@@ -2,7 +2,7 @@
 
 Lexer::Lexer()
 {
-    this->delimiter = "(?:[\n\\s]*\\,[\n\\s]*)|(?:[\n\\s]+)"; 
+    this->delimiter = "(?:[\n\\s\r\t]*\\,[\n\\s\r\t]*)|(?:[\n\\s\r\t]+)"; 
 }
 
 Lexer::Lexer(string input) : Lexer()
