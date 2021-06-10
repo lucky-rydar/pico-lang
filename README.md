@@ -6,7 +6,6 @@ The architecture of app will contain main foue classes:
 
 * VirtualMachine
    * Lexer (make token from text)
-   * TokenFormatter (does similar things as preprocessor in C)
    * Parser (translates tokens to bytes)
    * Executor (executes bytecode)
 
