@@ -15,9 +15,9 @@ Here I am going to describe main part of all instructions that will be realized
 
 Memory instructions:
 
-* push <value/register> - pushes some value to stack
-* pop <register> - deletes top value of stack and saves it to specified register 
-* set <register> <value/register> - sets value to register
+* push [value/register] - pushes some value to stack
+* pop [register] - deletes top value of stack and saves it to specified register 
+* set [register] [value/register] - sets value to register
 
 Math instructions:
 

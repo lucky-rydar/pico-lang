@@ -61,6 +61,8 @@ vector<int> Parser::parse()
         }
     }
 
+    compiled.push_back((int)Instruction::Stop);
+
     compiled.insert(compiled.begin(), compiled.size()+1);
     compiled.insert(compiled.end(), staticMem.begin(), staticMem.end());
     
@@ -115,7 +117,38 @@ void Parser::parsePop(int &index)
 
 void Parser::parseSet(int &index)
 {
+    if(index >= tokens.size() || index +1 >= tokens.size() || index + 1 >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    compiled.push_back((int)Instruction::Set);
+
+    vector<string> args = {tokens[index + 1], tokens[index + 2]};
     
+    for(auto arg : args)
+    {
+        if(ArgPars::isRegister(arg))
+        {
+            if(registerByToken.find(arg) == registerByToken.end())
+                throw runtime_error("there is no register '" + arg + "'");
+
+            compiled.push_back((int)registerByToken[arg]);
+        }
+        else if(ArgPars::isValue(arg))
+        {
+            ensureIntValid(arg);
+            int value = stoi(arg);
+
+            staticMem.push_back(value);
+            compiled.push_back(staticMem.size() - 1);
+        }
+        else
+        {
+            throw runtime_error("unknown argument '" + arg + "'");
+        }
+    }
+
+    index += 3;
 }
 
 void Parser::parseAdd(int &index)
