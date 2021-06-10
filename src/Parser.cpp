@@ -63,7 +63,12 @@ vector<int> Parser::parse()
 
     compiled.push_back((int)Instruction::Stop);
 
-    compiled.insert(compiled.begin(), compiled.size()+1);
+    if(staticMem.size() > 0)
+        compiled.insert(compiled.begin(), compiled.size()+1);
+    else
+        // -1 means that static memory is not allocated
+        compiled.insert(compiled.begin(), -1);
+
     compiled.insert(compiled.end(), staticMem.begin(), staticMem.end());
     
     return compiled;
@@ -117,7 +122,7 @@ void Parser::parsePop(int &index)
 
 void Parser::parseSet(int &index)
 {
-    if(index >= tokens.size() || index +1 >= tokens.size() || index + 1 >= tokens.size())
+    if(index >= tokens.size() || index +1 >= tokens.size() || index + 2 >= tokens.size())
         throw runtime_error("out of range");
 
     string ins = tokens[index];
@@ -125,26 +130,32 @@ void Parser::parseSet(int &index)
 
     vector<string> args = {tokens[index + 1], tokens[index + 2]};
     
-    for(auto arg : args)
+    for(int i = 0; i < args.size(); i++)
     {
-        if(ArgPars::isRegister(arg))
+        if(i == 0)
         {
-            if(registerByToken.find(arg) == registerByToken.end())
-                throw runtime_error("there is no register '" + arg + "'");
-
-            compiled.push_back((int)registerByToken[arg]);
+            if(!ArgPars::isRegister(args[i]))
+                throw runtime_error("first argument is not register: '" + args[i] + "'");
         }
-        else if(ArgPars::isValue(arg))
+
+        if(ArgPars::isRegister(args[i]))
         {
-            ensureIntValid(arg);
-            int value = stoi(arg);
+            if(registerByToken.find(args[i]) == registerByToken.end())
+                throw runtime_error("there is no register '" + args[i] + "'");
+
+            compiled.push_back((int)registerByToken[args[i]]);
+        }
+        else if(ArgPars::isValue(args[i]))
+        {
+            ensureIntValid(args[i]);
+            int value = stoi(args[i]);
 
             staticMem.push_back(value);
             compiled.push_back(staticMem.size() - 1);
         }
         else
         {
-            throw runtime_error("unknown argument '" + arg + "'");
+            throw runtime_error("unknown argument '" + args[i] + "'");
         }
     }
 

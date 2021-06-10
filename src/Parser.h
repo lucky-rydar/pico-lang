@@ -11,7 +11,7 @@ using namespace std;
 enum class Instruction
 {
     // memory
-    Push = 1, Set, Pop,
+    Push = 1, Pop, Set,
 
     // math
     Add, Sub, Mul, Div,

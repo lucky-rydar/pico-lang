@@ -21,3 +21,63 @@ TEST(Parser, getSetTokens)
     p.setTokens(tokens);
     ASSERT_EQ(p.getTokens(), tokens);
 }
+
+TEST(Parser, parse1)
+{
+    Parser p;
+    p.setTokens({});
+    auto res = p.parse();
+
+    ASSERT_EQ(res, vector<int>({-1, 8}));
+}
+
+TEST(Parser, parsePush)
+{
+    Parser p;
+    vector<string> tokens = {"push", "1337"};
+    p.setTokens(tokens);
+    
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({4, 1, 0, 8, 1337}));
+}
+
+TEST(Parser, parsePop)
+{
+    Parser p;
+    vector<string> tokens = {"pop"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 2, 8}));
+}
+
+TEST(Parse, parseSet)
+{
+    Parser p;
+    vector<string> tokens = {"set", "%A", "123"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({5, 3, -1, 0, 8, 123}));
+}
+
+TEST(Parse, parsePushExc)
+{
+    Parser p;
+    vector<string> tokens = {"push"};
+    p.setTokens(tokens);
+
+    ASSERT_THROW(p.parse(), runtime_error);
+}
+
+TEST(Parse, parseSetExc)
+{
+    Parser p;
+    vector<string> tokens = {"set", "12", "%B"};
+    p.setTokens(tokens);
+
+    ASSERT_THROW(p.parse(), runtime_error);
+
+    p.setTokens({"set", "%B", "-123"});
+    ASSERT_NO_THROW(p.parse());
+}
