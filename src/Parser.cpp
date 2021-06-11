@@ -13,6 +13,8 @@ Parser::Parser()
     parserByToken["mul"] = bind(&Parser::parseMul, this, std::placeholders::_1);
     parserByToken["div"] = bind(&Parser::parseDiv, this, std::placeholders::_1);
 
+    parserByToken["stop"] = bind(&Parser::parseStop, this, std::placeholders::_1);
+
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
     registerByToken["%C"] = Instruction::C;
@@ -212,6 +214,17 @@ void Parser::parseDiv(int &index)
 
     string ins = tokens[index];
     compiled.push_back((int)Instruction::Div);
+
+    index += 1;
+}
+
+void Parser::parseStop(int &index)
+{
+    if(index >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    compiled.push_back((int)Instruction::Stop);
 
     index += 1;
 }
