@@ -104,18 +104,30 @@ void Parser::parsePush(int &index)
         throw runtime_error("unknown argument '" + arg + "'");
     }
 
-
     index += 2;
 }
 
 void Parser::parsePop(int &index)
 {
-    if(index >= tokens.size())
+    if(index >= tokens.size() || index + 1 >= tokens.size())
         throw runtime_error("out of range"); 
     
     string ins = tokens[index];
+    string arg = tokens[index+1];
 
     compiled.push_back((int)Instruction::Pop);
+
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        compiled.push_back((int)registerByToken[arg]);
+    }
+    else
+    {
+        throw runtime_error("argument '" + arg + "' is not register");
+    }
 
     index += 1;
 }
