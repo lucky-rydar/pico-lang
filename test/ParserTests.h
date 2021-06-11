@@ -90,3 +90,43 @@ TEST(Parse, parseSetExc)
     p.setTokens({"set", "%B", "-123"});
     ASSERT_NO_THROW(p.parse());
 }
+
+TEST(Parse, parseAdd)
+{
+    Parser p;
+    vector<string> tokens = {"add"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 4, 8}));
+}
+
+TEST(Parse, parseSub)
+{
+    Parser p;
+    vector<string> tokens = {"sub"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 5, 8}));
+}
+
+TEST(Parse, parseMul)
+{
+    Parser p;
+    vector<string> tokens = {"mul"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 6, 8}));
+}
+
+TEST(Parse, parseDiv)
+{
+    Parser p;
+    vector<string> tokens = {"div"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 7, 8}));
+}
