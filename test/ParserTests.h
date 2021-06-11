@@ -130,3 +130,13 @@ TEST(Parse, parseDiv)
     auto res = p.parse();
     ASSERT_EQ(res, vector<int>({-1, 7, 8}));
 }
+
+TEST(Parse, parseStop)
+{
+    Parser p;
+    vector<string> tokens = {"stop"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 8, 8}));
+}
