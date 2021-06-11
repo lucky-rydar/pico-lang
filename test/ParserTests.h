@@ -41,14 +41,23 @@ TEST(Parser, parsePush)
     ASSERT_EQ(res, vector<int>({4, 1, 0, 8, 1337}));
 }
 
-TEST(Parser, parsePop)
+TEST(Parser, parsePop1)
 {
     Parser p;
-    vector<string> tokens = {"pop"};
+    vector<string> tokens = {"pop", "%A"};
     p.setTokens(tokens);
 
     auto res = p.parse();
-    ASSERT_EQ(res, vector<int>({-1, 2, 8}));
+    ASSERT_EQ(res, vector<int>({-1, 2, -1, 8}));
+}
+
+TEST(Parser, parsePop2)
+{
+    Parser p;
+    vector<string> tokens = {"pop", "123"};
+    p.setTokens(tokens);
+
+    ASSERT_THROW(p.parse(), runtime_error);
 }
 
 TEST(Parse, parseSet)
