@@ -31,7 +31,7 @@ Math instructions takes values from stack and the result will be pushed to stack
 I/O instructions:
 
 * in [register] - waits to enter symbol and writes its value to specified register
-* out [register] - prints value of register
+* out [register] - prints value stored in register
 
 Additional instructions:
 
