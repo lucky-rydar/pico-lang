@@ -76,7 +76,7 @@ vector<int> Parser::parse()
 
 void Parser::parsePush(int &index)
 { 
-    if(index >= tokens.size() || index + 1 >= tokens.size())
+    if(index + 1 >= tokens.size())
         throw runtime_error("out of range"); 
 
     string ins = tokens[index];
@@ -109,7 +109,7 @@ void Parser::parsePush(int &index)
 
 void Parser::parsePop(int &index)
 {
-    if(index >= tokens.size() || index + 1 >= tokens.size())
+    if(index + 1 >= tokens.size())
         throw runtime_error("out of range"); 
     
     string ins = tokens[index];
@@ -134,7 +134,7 @@ void Parser::parsePop(int &index)
 
 void Parser::parseSet(int &index)
 {
-    if(index >= tokens.size() || index +1 >= tokens.size() || index + 2 >= tokens.size())
+    if(index + 2 >= tokens.size())
         throw runtime_error("out of range");
 
     string ins = tokens[index];
