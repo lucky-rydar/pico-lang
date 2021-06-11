@@ -13,8 +13,6 @@ Parser::Parser()
     parserByToken["mul"] = bind(&Parser::parseMul, this, std::placeholders::_1);
     parserByToken["div"] = bind(&Parser::parseDiv, this, std::placeholders::_1);
 
-    parserByToken["stop"] = bind(&Parser::parseStop, this, std::placeholders::_1);
-
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
     registerByToken["%C"] = Instruction::C;
@@ -176,27 +174,46 @@ void Parser::parseSet(int &index)
 
 void Parser::parseAdd(int &index)
 {
-    
+    if(index >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    compiled.push_back((int)Instruction::Add);
+
+    index += 1;
 }
 
 void Parser::parseSub(int &index)
 {
-    
+    if(index >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    compiled.push_back((int)Instruction::Sub);
+
+    index += 1;
 }
 
 void Parser::parseMul(int &index)
 {
-    
+    if(index >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    compiled.push_back((int)Instruction::Mul);
+
+    index += 1;
 }
 
 void Parser::parseDiv(int &index)
 {
-    
-}
+    if(index >= tokens.size())
+        throw runtime_error("out of range");
 
-void Parser::parseStop(int &index)
-{
-    
+    string ins = tokens[index];
+    compiled.push_back((int)Instruction::Div);
+
+    index += 1;
 }
 
 void Parser::ensureIntValid(string val)

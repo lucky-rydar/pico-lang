@@ -45,8 +45,6 @@ private:
     void parseMul(int &index);
     void parseDiv(int &index);
 
-    void parseStop(int &index);
-
 public:
     Parser();
     Parser(vector<string> tokens);
