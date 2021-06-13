@@ -35,7 +35,7 @@ I/O instructions:
 
 Additional instructions:
 
-* stop - tell to exe
+* stop - tell executor to stop executing
 
 ### Memory
 
