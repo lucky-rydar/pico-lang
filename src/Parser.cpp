@@ -61,17 +61,11 @@ vector<int> Parser::parse()
         }
     }
 
-    compiled.push_back((int)Instruction::Stop);
+    bytecode.opCodes.push_back((int)Instruction::Stop);
 
-    if(staticMem.size() > 0)
-        compiled.insert(compiled.begin(), compiled.size()+1);
-    else
-        // -1 means that static memory is not allocated
-        compiled.insert(compiled.begin(), -1);
+    processMetadata();
 
-    compiled.insert(compiled.end(), staticMem.begin(), staticMem.end());
-    
-    return compiled;
+    return bytecode.getAll();
 }
 
 void Parser::parsePush(int &index)
@@ -82,22 +76,22 @@ void Parser::parsePush(int &index)
     string ins = tokens[index];
     string arg = tokens[index+1];
     
-    compiled.push_back((int)Instruction::Push);
+    bytecode.opCodes.push_back((int)Instruction::Push);
 
     if(ArgPars::isRegister(arg))
     {
         if(registerByToken.find(arg) == registerByToken.end())
             throw runtime_error("there is no register '" + arg + "'");
 
-        compiled.push_back((int)registerByToken[arg]);
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
     }
     else if(ArgPars::isValue(arg))
     {
         ensureIntValid(arg);
         int value = stoi(arg);
         
-        staticMem.push_back(value);
-        compiled.push_back(staticMem.size() - 1);
+        bytecode.staticMem.push_back(value);
+        bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
     }
     else
     {
@@ -115,14 +109,14 @@ void Parser::parsePop(int &index)
     string ins = tokens[index];
     string arg = tokens[index+1];
 
-    compiled.push_back((int)Instruction::Pop);
+    bytecode.opCodes.push_back((int)Instruction::Pop);
 
     if(ArgPars::isRegister(arg))
     {
         if(registerByToken.find(arg) == registerByToken.end())
             throw runtime_error("there is no register '" + arg + "'");
 
-        compiled.push_back((int)registerByToken[arg]);
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
     }
     else
     {
@@ -138,7 +132,7 @@ void Parser::parseSet(int &index)
         throw runtime_error("out of range");
 
     string ins = tokens[index];
-    compiled.push_back((int)Instruction::Set);
+    bytecode.opCodes.push_back((int)Instruction::Set);
 
     vector<string> args = {tokens[index + 1], tokens[index + 2]};
     
@@ -155,15 +149,15 @@ void Parser::parseSet(int &index)
             if(registerByToken.find(args[i]) == registerByToken.end())
                 throw runtime_error("there is no register '" + args[i] + "'");
 
-            compiled.push_back((int)registerByToken[args[i]]);
+            bytecode.opCodes.push_back((int)registerByToken[args[i]]);
         }
         else if(ArgPars::isValue(args[i]))
         {
             ensureIntValid(args[i]);
             int value = stoi(args[i]);
 
-            staticMem.push_back(value);
-            compiled.push_back(staticMem.size() - 1);
+            bytecode.staticMem.push_back(value);
+            bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
         }
         else
         {
@@ -180,7 +174,7 @@ void Parser::parseAdd(int &index)
         throw runtime_error("out of range");
 
     string ins = tokens[index];
-    compiled.push_back((int)Instruction::Add);
+    bytecode.opCodes.push_back((int)Instruction::Add);
 
     index += 1;
 }
@@ -191,7 +185,7 @@ void Parser::parseSub(int &index)
         throw runtime_error("out of range");
 
     string ins = tokens[index];
-    compiled.push_back((int)Instruction::Sub);
+    bytecode.opCodes.push_back((int)Instruction::Sub);
 
     index += 1;
 }
@@ -202,7 +196,7 @@ void Parser::parseMul(int &index)
         throw runtime_error("out of range");
 
     string ins = tokens[index];
-    compiled.push_back((int)Instruction::Mul);
+    bytecode.opCodes.push_back((int)Instruction::Mul);
 
     index += 1;
 }
@@ -213,7 +207,7 @@ void Parser::parseDiv(int &index)
         throw runtime_error("out of range");
 
     string ins = tokens[index];
-    compiled.push_back((int)Instruction::Div);
+    bytecode.opCodes.push_back((int)Instruction::Div);
 
     index += 1;
 }
@@ -224,7 +218,7 @@ void Parser::parseStop(int &index)
         throw runtime_error("out of range");
 
     string ins = tokens[index];
-    compiled.push_back((int)Instruction::Stop);
+    bytecode.opCodes.push_back((int)Instruction::Stop);
 
     index += 1;
 }
@@ -239,4 +233,13 @@ void Parser::ensureIntValid(string val)
     {
         throw runtime_error("value '" + val + "' is invalid");
     }   
+}
+
+void Parser::processMetadata()
+{
+    if(bytecode.staticMem.size() > 0)
+        bytecode.metaData.push_back(bytecode.opCodes.size() + 1);
+    else
+        // -1 means that static memory is not allocated
+        bytecode.metaData.push_back(-1);
 }

@@ -5,6 +5,7 @@
 #include <map>
 
 #include "ArgumentParser.h"
+#include "Bytecode.h"
 
 using namespace std;
 
@@ -28,12 +29,11 @@ class Parser
     typedef ArgumentParser ArgPars;
 private:
     vector<string> tokens;
+    
     map<string, Instruction> registerByToken;
-
     map<string, function<void(int &index)>> parserByToken;
     
-    vector<int> compiled;
-    vector<int> staticMem;
+    Bytecode bytecode;
 
 private:
     void parsePush(int &index);
@@ -46,6 +46,8 @@ private:
     void parseDiv(int &index);
 
     void parseStop(int &index);
+
+    void processMetadata();
 
 public:
     Parser();
