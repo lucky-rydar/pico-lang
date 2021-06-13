@@ -9,4 +9,6 @@ public:
     vector<int> metaData;
     vector<int> opCodes;
     vector<int> staticMem;
+
+    vector<int> getAll();
 };
