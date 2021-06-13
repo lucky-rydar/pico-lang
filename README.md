@@ -2,7 +2,7 @@
 
 This is my own programming language based on virtual machine
 
-The architecture of app will contain main foue classes:
+The architecture of app will contain main four classes:
 
 * VirtualMachine
    * Lexer (make token from text)
@@ -40,7 +40,7 @@ Additional instructions:
 ### Memory
 
 * stack (for using stack you have two instructions: push, pop)
-* registers (to set value you can use "set" instruction and to get value from register just type %<register name>)
+* registers (to set value you can use "set" instruction and to get value from register just type %[egister name])
 * static memory (when you type as an argument some number on compile time it will be saved at the end of compiled file and got special address)
 
 ### Compiled file structure
