@@ -13,8 +13,6 @@ Executor::Executor()
     instructions[Instruction::Sub] = std::bind(&Executor::sub, this);
     instructions[Instruction::Mul] = std::bind(&Executor::mul, this);
     instructions[Instruction::Div] = std::bind(&Executor::div, this);
-
-    instructions[Instruction::Stop] = std::bind(&Executor::stop, this);
 }
 
 Executor::Executor(vector<int> bytes) : Executor()
@@ -37,10 +35,14 @@ void Executor::execute()
     if(bytes.empty())
         return;
 
+    readMetadata();
+
     if(instructions.find((Instruction)bytes[ip]) != instructions.end())
     {
-        for(ip = 0; ip < bytes.size(); )
+        for(; ip < bytes.size(); )
         {
+            if(bytes[ip] == (int)Instruction::Stop)
+                return;
             try
             {
                 instructions[(Instruction)bytes[ip]]();
@@ -57,9 +59,23 @@ void Executor::execute()
     }
 }
 
+void Executor::readMetadata()
+{
+    staticOffset = bytes[ip];
+    ip++;
+}
+
 void Executor::push()
 {
-
+    if(bytes[ip + 1] >= 0)
+    {
+        state.pushVal(bytes[staticOffset]);
+    }
+    else if(bytes[ip+1] < 0)
+    {
+        state.pushVal(state.getRegVal(Instruction(bytes[ip+1]+1)));
+    }
+    ip += 2;
 }
 
 void Executor::pop()
@@ -88,11 +104,6 @@ void Executor::mul()
 }
 
 void Executor::div()
-{
-    
-}
-
-void Executor::stop()
 {
     
 }

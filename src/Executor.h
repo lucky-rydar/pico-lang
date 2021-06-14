@@ -16,6 +16,7 @@ private:
 
     State state;
     map<Instruction, function<void()>> instructions;
+    int staticOffset; // TODO: later move to metadata class
 public:
     Executor();
     Executor(vector<int> bytes);
@@ -25,8 +26,9 @@ public:
 
     void execute();
 
+    void readMetadata();
+    State getState();
 private:
-    //TODO: here add all instructions functions
     void push();
     void pop();
     void set();
@@ -35,6 +37,4 @@ private:
     void sub();
     void mul();
     void div();
-
-    void stop();
 };
