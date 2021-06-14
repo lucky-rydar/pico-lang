@@ -1,5 +1,10 @@
 #pragma once
+#include <map>
 #include <vector>
+#include <exception>
+
+#include "State.h"
+#include "Parser.h"
 
 using namespace std;
 
@@ -9,8 +14,8 @@ private:
     vector<int> bytes;
     int ip; // index of current instruction
 
-    // TODO: add state class object to store registers data and stack
-
+    State state;
+    map<Instruction, function<void()>> instructions;
 public:
     Executor();
     Executor(vector<int> bytes);
@@ -22,4 +27,14 @@ public:
 
 private:
     //TODO: here add all instructions functions
+    void push();
+    void pop();
+    void set();
+
+    void add();
+    void sub();
+    void mul();
+    void div();
+
+    void stop();
 };
