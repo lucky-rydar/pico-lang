@@ -3,6 +3,7 @@
 #include "ParserTests.h"
 #include "TokenFormatterTests.h"
 #include "ArgumentParserTests.h"
+#include "ExecutorTests.h"
 
 int main(int argc, char** argv)
 {
