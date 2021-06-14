@@ -96,3 +96,8 @@ void Executor::stop()
 {
     
 }
+
+State Executor::getState()
+{
+    return state;
+}
