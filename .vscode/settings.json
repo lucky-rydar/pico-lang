@@ -67,5 +67,6 @@
         "typeinfo": "cpp",
         "variant": "cpp"
     },
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "terminal.integrated.fontFamily": "NotoSansMono Nerd Font"
 }
