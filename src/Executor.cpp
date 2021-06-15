@@ -107,7 +107,10 @@ void Executor::add()
 
 void Executor::sub()
 {
-    int toPush = state.pop() - state.pop();
+    int second = state.pop();
+    int first = state.pop();
+    
+    int toPush =  first - second;
     state.pushVal(toPush);
     
     ip += 1;
@@ -115,12 +118,21 @@ void Executor::sub()
 
 void Executor::mul()
 {
+    int toPush = state.pop() * state.pop();
+    state.pushVal(toPush);
     
+    ip += 1;
 }
 
 void Executor::div()
 {
+    int second = state.pop();
+    int first = state.pop();
     
+    int toPush =  first / second;
+    state.pushVal(toPush);
+    
+    ip += 1;
 }
 
 State Executor::getState()

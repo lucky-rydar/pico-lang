@@ -62,10 +62,36 @@ TEST(Executor, execSub)
     Executor e;
 
     // push 2 push 2 sub pop %A
-    e.setBytes(vector<int>({9, 1, 0, 1, 1, 5, 2, -1, 8, 2, 2}));
+    e.setBytes(vector<int>({9, 1, 0, 1, 1, 5, 2, -1, 8, 3, 2}));
 
     e.execute();
 
     auto state = e.getState();
-    ASSERT_EQ(state.getRegVal(Instruction::A), 0);
+    ASSERT_EQ(state.getRegVal(Instruction::A), 1);
+}
+
+TEST(Executor, execMul)
+{
+    Executor e;
+
+    // push 2 push 2 mul pop %A
+    e.setBytes(vector<int>({9, 1, 0, 1, 1, 6, 2, -1, 8, 3, 2}));
+
+    e.execute();
+
+    auto state = e.getState();
+    ASSERT_EQ(state.getRegVal(Instruction::A), 6);
+}
+
+TEST(Executor, execDiv)
+{
+    Executor e;
+
+    // push 2 push 2 div pop %A
+    e.setBytes(vector<int>({9, 1, 0, 1, 1, 7, 2, -1, 8, 8, 2}));
+
+    e.execute();
+
+    auto state = e.getState();
+    ASSERT_EQ(state.getRegVal(Instruction::A), 4);
 }
