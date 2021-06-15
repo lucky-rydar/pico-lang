@@ -61,7 +61,7 @@ void Executor::execute()
 
 void Executor::readMetadata()
 {
-    staticOffset = bytes[ip];
+    metadata.smo = bytes[ip];
     ip++;
 }
 
@@ -69,7 +69,7 @@ void Executor::push()
 {
     if(bytes[ip + 1] >= 0)
     {
-        state.pushVal(bytes[staticOffset]);
+        state.pushVal(bytes[metadata.smo]);
     }
     else if(bytes[ip+1] < 0)
     {

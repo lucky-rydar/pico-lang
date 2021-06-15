@@ -5,6 +5,7 @@
 
 #include "State.h"
 #include "Parser.h"
+#include "Metadata.h"
 
 using namespace std;
 
@@ -15,8 +16,8 @@ private:
     int ip; // index of current instruction
 
     State state;
+    Metadata metadata;
     map<Instruction, function<void()>> instructions;
-    int staticOffset; // TODO: later move to metadata class
 public:
     Executor();
     Executor(vector<int> bytes);
