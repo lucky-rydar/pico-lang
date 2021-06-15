@@ -2,7 +2,14 @@
 
 State::State()
 {
-    
+    this->A = 0;
+    this->B = 0;
+    this->C = 0;
+    this->D = 0;
+    this->E = 0;
+    this->F = 0;
+    this->G = 0;
+    this->H = 0;
 }
 
 void State::setRegVal(Instruction reg, int val)

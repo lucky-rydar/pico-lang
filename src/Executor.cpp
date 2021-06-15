@@ -80,7 +80,8 @@ void Executor::push()
 
 void Executor::pop()
 {
-    
+    state.popVal((Instruction)(bytes[ip + 1]));
+    ip += 2;
 }
 
 void Executor::set()
