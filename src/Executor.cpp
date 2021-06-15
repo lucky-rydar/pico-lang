@@ -69,7 +69,7 @@ void Executor::push()
 {
     if(bytes[ip + 1] >= 0)
     {
-        state.pushVal(bytes[metadata.smo]);
+        state.pushVal(bytes[metadata.smo + bytes[ip+1]]);
     }
     else if(bytes[ip+1] < 0)
     {
@@ -86,7 +86,15 @@ void Executor::pop()
 
 void Executor::set()
 {
-    
+    if(bytes[ip + 2] >= 0)
+    {
+        state.setRegVal((Instruction)bytes[ip+1], bytes[metadata.smo + bytes[ip+2]]);
+    }
+    else if(bytes[ip+2] < 0)
+    {
+        state.setRegVal((Instruction)bytes[ip+1], state.getRegVal((Instruction)bytes[ip+1]));
+    }
+    ip += 3;
 }
 
 void Executor::add()
