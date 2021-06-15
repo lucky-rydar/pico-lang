@@ -21,3 +21,17 @@ TEST(Executor, execPush)
     state.popVal(Instruction::A);
     ASSERT_EQ(state.getRegVal(Instruction::A), 1337);
 }
+
+TEST(Executor, execPop)
+{
+    Executor e;
+    e.setBytes(vector<int>({6, 1, 0, 2, -1, 8, 1337})); 
+
+    e.execute();
+
+    auto state = e.getState();
+    cout << state.getRegVal(Instruction::A) << endl;
+
+
+    ASSERT_EQ(state.getRegVal(Instruction::A), 1337);
+}
