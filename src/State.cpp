@@ -92,3 +92,10 @@ void State::popVal(Instruction reg)
 
     setRegVal(reg, topVal);
 }
+
+int State::pop()
+{
+    int res = stackMem.top();
+    stackMem.pop();
+    return res;
+}

@@ -20,4 +20,6 @@ public:
 
     void pushVal(int val);
     void popVal(Instruction reg);
+
+    int pop();
 };
