@@ -107,7 +107,10 @@ void Executor::add()
 
 void Executor::sub()
 {
+    int toPush = state.pop() - state.pop();
+    state.pushVal(toPush);
     
+    ip += 1;
 }
 
 void Executor::mul()
