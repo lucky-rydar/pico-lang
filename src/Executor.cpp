@@ -99,7 +99,10 @@ void Executor::set()
 
 void Executor::add()
 {
+    int toPush = state.pop() + state.pop();
+    state.pushVal(toPush);
     
+    ip += 1;
 }
 
 void Executor::sub()

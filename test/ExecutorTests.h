@@ -43,3 +43,16 @@ TEST(Executor, execSet)
     auto state = e.getState();
     ASSERT_EQ(state.getRegVal(Instruction::A), 123);
 }
+
+TEST(Executor, execAdd)
+{
+    Executor e;
+
+    // push 2 push 2 add pop %A
+    e.setBytes(vector<int>({9, 1, 0, 1, 1, 4, 2, -1, 8, 2, 2}));
+
+    e.execute();
+
+    auto state = e.getState();
+    ASSERT_EQ(state.getRegVal(Instruction::A), 4);
+}
