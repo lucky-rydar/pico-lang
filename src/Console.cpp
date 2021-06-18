@@ -5,7 +5,7 @@ Console::Console()
 
 }
 
-void Console::getLine()
+void Console::process()
 {
     
 }

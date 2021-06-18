@@ -13,5 +13,5 @@ private:
 public:
     Console();
 
-    void getLine();
+    void process();
 };
