@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <stdexcept>
 #include <vector>
 #include <string>
 #include <map>
@@ -13,5 +14,9 @@ private:
 public:
     Console();
 
-    void process();
+    void process(vector<string> command);
+
+private:
+    void compile(vector<string> params);
+    void run(vector<string> params);
 };
