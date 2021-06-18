@@ -10,11 +10,12 @@ void Console::process(vector<string> command)
 {
     if(commands.find(command[0]) == commands.end())
     {
-        throw std::runtime_error("there is no such command as '" + command[1] + "'");
+        throw std::runtime_error(string("there is no such command as '" + command[0] + "'"));
     }
     else
     {
-        commands[command[1]](vector<string>(command.begin() + 1, command.end()));
+        if(command.size() >= 2)
+            commands[command[0]](vector<string>(command.begin() + 1, command.end()));
     }
 }
 
