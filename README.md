@@ -53,5 +53,5 @@ Additional instructions:
 
 I am going to realize two main commands:
 
-* ./main compile [source-file]
+* ./main compile [source-file] [executable-file]-optional
 * ./main run [executable-file]
