@@ -27,7 +27,7 @@ void Console::process(vector<string> command)
 void Console::compile(vector<string> params)
 {
     if(params.size() == 0)
-        throw runtime_error("there are no arguments for command 'compile'");
+        throw runtime_error("too few arguments for command 'compile'");
 
     string source = params[0];
     string executable;
@@ -36,8 +36,17 @@ void Console::compile(vector<string> params)
         executable = "a.ple";
     else if(params.size() == 2)
         executable = params[1];
-
-    string code = FileReader::readAsText(source);
+    
+    string code;
+    try
+    {
+        code = FileReader::readAsText(source);    
+    }
+    catch(runtime_error)
+    {
+        throw;
+    }
+    
     Lexer l(code);
     auto tokens = l.getTokens();
     
@@ -50,5 +59,30 @@ void Console::compile(vector<string> params)
 
 void Console::run(vector<string> params)
 {
+    if(params.size() == 0)
+        throw runtime_error("too few arguments for command 'compile'");
+    
+    string executable = params[0];
 
+    vector<int> bytes;
+    try
+    {
+        bytes = FileReader::readAsBytes(executable);    
+    }
+    catch(runtime_error)
+    {
+        throw;
+    }
+    
+    Executor e;
+    e.setBytes(bytes);
+
+    try
+    {
+        e.execute();
+    }
+    catch(runtime_error)
+    {
+        throw;
+    }
 }
