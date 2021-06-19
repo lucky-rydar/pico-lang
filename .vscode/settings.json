@@ -65,7 +65,12 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "mutex": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "thread": "cpp",
+        "valarray": "cpp"
     },
     "cmake.configureOnOpen": true,
     "terminal.integrated.fontFamily": "NotoSansMono Nerd Font"

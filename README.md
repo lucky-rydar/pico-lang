@@ -48,3 +48,10 @@ Additional instructions:
 * metadata
 * instructions
 * static memory
+
+### Console interface
+
+I am going to realize two main commands:
+
+* ./main compile [source-file]
+* ./main run [executable-file]
