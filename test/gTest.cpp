@@ -7,6 +7,8 @@
 #include "ArgumentParserTests.h"
 #include "ExecutorTests.h"
 #include "ConsoleTests.h"
+#include "FileReaderTests.h"
+#include "FileWriterTests.h"
 
 int main(int argc, char** argv)
 {
