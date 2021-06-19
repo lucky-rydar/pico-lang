@@ -8,6 +8,11 @@ Console::Console()
 
 void Console::process(vector<string> command)
 {
+    if(command.size() < 1)
+        throw runtime_error("command is not specified");
+    if(command[0] == "")
+        throw runtime_error("empty command");
+
     if(commands.find(command[0]) == commands.end())
     {
         throw std::runtime_error(string("there is no such command as '" + command[0] + "'"));
@@ -21,7 +26,26 @@ void Console::process(vector<string> command)
 
 void Console::compile(vector<string> params)
 {
+    if(params.size() == 0)
+        throw runtime_error("there are no arguments for command 'compile'");
 
+    string source = params[0];
+    string executable;
+    
+    if(params.size() == 1)
+        executable = "a.ple";
+    else if(params.size() == 2)
+        executable = params[1];
+
+    string code = FileReader::readAsText(source);
+    Lexer l(code);
+    auto tokens = l.getTokens();
+    
+    Parser p;
+    p.setTokens(tokens);
+    auto bytes = p.parse();
+    
+    FileWriter::writeBytes(executable, bytes);
 }
 
 void Console::run(vector<string> params)

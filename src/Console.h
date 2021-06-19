@@ -5,6 +5,10 @@
 #include <string>
 #include <map>
 
+#include "FileReader.h"
+#include "FileWriter.h"
+#include "Parser.h"
+
 using namespace std;
 
 class Console
