@@ -46,3 +46,28 @@ TEST(Console, compileTest)
     remove(filename.c_str());
     remove("a.ple");
 }
+
+TEST(Console, runTest)
+{
+    Console c;
+    string filename = "test.pl";
+    
+    vector<string> commandCompile = {"compile", filename};
+
+    string code = "push 12 pop";
+    Lexer l(code);
+    Parser p;
+    p.setTokens(l.getTokens());
+    auto bytes1 = p.parse();
+    
+    ofstream file(filename);
+    file << code;
+    file.close();
+
+    c.process(commandCompile);
+
+    string execFile = "a.ple";
+    vector<string> commandRun = {"run", execFile};
+    
+    ASSERT_NO_THROW(c.process(commandRun));
+}
