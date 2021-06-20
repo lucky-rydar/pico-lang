@@ -38,4 +38,8 @@ private:
     void sub();
     void mul();
     void div();
+
+    void in();
+    void out();
+    void outl();
 };

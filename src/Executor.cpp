@@ -13,6 +13,10 @@ Executor::Executor()
     instructions[Instruction::Sub] = std::bind(&Executor::sub, this);
     instructions[Instruction::Mul] = std::bind(&Executor::mul, this);
     instructions[Instruction::Div] = std::bind(&Executor::div, this);
+
+    instructions[Instruction::In] = std::bind(&Executor::in, this);
+    instructions[Instruction::Out] = std::bind(&Executor::out, this);
+    instructions[Instruction::Outl] = std::bind(&Executor::outl, this);
 }
 
 Executor::Executor(vector<int> bytes) : Executor()
@@ -131,6 +135,42 @@ void Executor::div()
     
     int toPush =  first / second;
     state.pushVal(toPush);
+    
+    ip += 1;
+}
+
+void Executor::in()
+{
+    string input;
+    cin >> input;
+
+    int inputInt = 0;
+
+    try
+    {
+        inputInt = stoi(input);
+    }
+    catch(exception)
+    {
+        throw runtime_error("input is not an integer");
+    }
+
+    state.setRegVal((Instruction)bytes[ip+1], inputInt);
+
+    ip += 2;
+}
+
+void Executor::out()
+{
+    auto val = state.getRegVal((Instruction)bytes[ip + 1]);
+    cout << val;
+
+    ip += 2;
+}
+
+void Executor::outl()
+{
+    cout << endl;
     
     ip += 1;
 }
