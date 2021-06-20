@@ -17,6 +17,7 @@ Parser::Parser()
 
     parserByToken["in"] = bind(&Parser::parseIn, this, std::placeholders::_1);
     parserByToken["out"] = bind(&Parser::parseOut, this, std::placeholders::_1);
+    parserByToken["outl"] = bind(&Parser::parseOutl, this, std::placeholders::_1);
 
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
@@ -274,6 +275,17 @@ void Parser::parseOut(int& index)
     }
 
     index += 2;
+}
+
+void Parser::parseOutl(int& index)
+{
+    if(index >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    bytecode.opCodes.push_back((int)Instruction::Outl);
+
+    index += 1;
 }
 
 void Parser::ensureIntValid(string val)

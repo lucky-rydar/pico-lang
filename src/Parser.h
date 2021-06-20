@@ -20,7 +20,7 @@ enum class Instruction
     Stop,
 
     // i/o
-    In, Out,
+    In, Out, Outl,
 
     // registers
     A = -1, B = -2, C = -3, D = -4, 
@@ -52,6 +52,7 @@ private:
 
     void parseIn(int& index);
     void parseOut(int& index);
+    void parseOutl(int& index);
 
     void processMetadata();
 

@@ -169,3 +169,13 @@ TEST(Parse, outInstruction)
     auto res = p.parse();
     ASSERT_EQ(res, vector<int>({-1, 10, -1, 8}));
 }
+
+TEST(Parse, outlInstruction)
+{
+    Parser p;
+    vector<string> tokens = { "outl" };
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 11, 8}));
+}
