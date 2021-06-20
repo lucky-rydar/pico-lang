@@ -15,6 +15,9 @@ Parser::Parser()
 
     parserByToken["stop"] = bind(&Parser::parseStop, this, std::placeholders::_1);
 
+    parserByToken["in"] = bind(&Parser::parseIn, this, std::placeholders::_1);
+    parserByToken["out"] = bind(&Parser::parseOut, this, std::placeholders::_1);
+
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
     registerByToken["%C"] = Instruction::C;
@@ -221,6 +224,56 @@ void Parser::parseStop(int &index)
     bytecode.opCodes.push_back((int)Instruction::Stop);
 
     index += 1;
+}
+
+void Parser::parseIn(int& index)
+{
+    if(index + 1 >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    string arg = tokens[index+1];
+
+    bytecode.opCodes.push_back((int)Instruction::In);
+
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
+    }
+    else
+    {
+        throw runtime_error("argument '" + arg + "' is not register");
+    }
+
+    index += 2;
+}
+
+void Parser::parseOut(int& index)
+{
+    if(index + 1 >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[index];
+    string arg = tokens[index+1];
+
+    bytecode.opCodes.push_back((int)Instruction::Out);
+
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
+    }
+    else
+    {
+        throw runtime_error("argument '" + arg + "' is not register");
+    }
+
+    index += 2;
 }
 
 void Parser::ensureIntValid(string val)

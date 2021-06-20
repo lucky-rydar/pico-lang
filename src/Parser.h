@@ -19,6 +19,9 @@ enum class Instruction
 
     Stop,
 
+    // i/o
+    In, Out,
+
     // registers
     A = -1, B = -2, C = -3, D = -4, 
     E = -5, F = -6, G = -7, H = -8
@@ -46,6 +49,9 @@ private:
     void parseDiv(int &index);
 
     void parseStop(int &index);
+
+    void parseIn(int& index);
+    void parseOut(int& index);
 
     void processMetadata();
 
