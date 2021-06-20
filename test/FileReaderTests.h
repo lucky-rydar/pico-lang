@@ -5,14 +5,17 @@ TEST(FileReader, readAsText)
 {
     string filename = "hello";
     string text = "Hello world";
-
+    
     ofstream f(filename);
     f << text << endl;
     f.close();
 
     ASSERT_NO_THROW(FileReader::readAsText(filename));
     
-    ASSERT_EQ(FileReader::readAsText(filename), text);
+
+    regex mustBeLike(text + "\\s*");
+    auto res = regex_match(FileReader::readAsText(filename), mustBeLike);
+    ASSERT_TRUE(res);
 
     remove(filename.c_str());
 }

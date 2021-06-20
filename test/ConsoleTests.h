@@ -69,5 +69,34 @@ TEST(Console, runTest)
     string execFile = "a.ple";
     vector<string> commandRun = {"run", execFile};
     
-    ASSERT_NO_THROW(c.process(commandRun));
+    EXPECT_NO_THROW(c.process(commandRun));
+
+    remove("test.pl");
+}
+
+TEST(Console, processMultiline)
+{
+    Console c;
+    string sourceFile = "src.pls";
+    vector<string> commandCompile = {"compile", sourceFile};
+
+    string code = "push 12\npop %A";
+
+    Lexer l(code);
+    Parser p;
+    p.setTokens(l.getTokens());
+    auto bytes1 = p.parse();
+    
+    ofstream file(sourceFile);
+    file << code;
+    file.close();
+
+    c.process(commandCompile);
+
+    string execFile = "a.ple";
+    vector<string> commandRun = {"run", execFile};  
+
+    EXPECT_NO_THROW(c.process(commandRun));
+
+    remove(execFile.c_str());
 }

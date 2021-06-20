@@ -14,6 +14,7 @@ string FileReader::readAsText(string path)
     {
         std::getline(file, buff);
         res += buff;
+        res += " ";
     }
     file.close();
 
@@ -31,11 +32,12 @@ vector<int> FileReader::readAsBytes(string path)
     {
         try
         {
-            res.push_back(stoi(str));
+            if(str != "")
+                res.push_back(stoi(str));
         }
         catch(exception)
         {
-            throw runtime_error("file if not valid");
+            throw runtime_error("file is not valid");
         }
     }
 
