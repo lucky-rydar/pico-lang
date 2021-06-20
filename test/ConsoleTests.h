@@ -27,7 +27,7 @@ TEST(Console, compileTest)
     string filename = "test.pl";
     vector<string> command = {"compile", filename};
     
-    string code = "push 12 pop";
+    string code = "push 12 pop %A";
     Lexer l(code);
     Parser p;
     p.setTokens(l.getTokens());
@@ -54,7 +54,7 @@ TEST(Console, runTest)
     
     vector<string> commandCompile = {"compile", filename};
 
-    string code = "push 12 pop";
+    string code = "push 12 pop %A";
     Lexer l(code);
     Parser p;
     p.setTokens(l.getTokens());

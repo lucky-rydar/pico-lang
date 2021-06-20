@@ -42,7 +42,7 @@ vector<string> Parser::getTokens()
 
 vector<int> Parser::parse()
 {
-    for(int i = 0; i < tokens.size(); i++)
+    for(int i = 0; i < tokens.size(); )
     {
         if(parserByToken.find(tokens[i]) != parserByToken.end())
         {
@@ -123,7 +123,7 @@ void Parser::parsePop(int &index)
         throw runtime_error("argument '" + arg + "' is not register");
     }
 
-    index += 1;
+    index += 2;
 }
 
 void Parser::parseSet(int &index)

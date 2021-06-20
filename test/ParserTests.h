@@ -140,3 +140,12 @@ TEST(Parse, parseStop)
     auto res = p.parse();
     ASSERT_EQ(res, vector<int>({-1, 8, 8}));
 }
+
+TEST(Parse, multiInstruction)
+{
+    Parser p;
+    vector<string> tokens = { "push", "12", "pop", "%A" };
+    p.setTokens(tokens);
+
+    EXPECT_NO_THROW(p.parse());
+}
