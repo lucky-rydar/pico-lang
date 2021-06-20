@@ -99,4 +99,5 @@ TEST(Console, processMultiline)
     EXPECT_NO_THROW(c.process(commandRun));
 
     remove(execFile.c_str());
+    remove(sourceFile.c_str());
 }
