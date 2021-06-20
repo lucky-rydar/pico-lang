@@ -32,6 +32,7 @@ I/O instructions:
 
 * in [register] - waits to enter symbol and writes its value to specified register
 * out [register] - prints value stored in register
+* outl - prints next line symbol (\n)
 
 Additional instructions:
 
