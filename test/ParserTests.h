@@ -149,3 +149,23 @@ TEST(Parse, multiInstruction)
 
     EXPECT_NO_THROW(p.parse());
 }
+
+TEST(Parse, inInstruction)
+{
+    Parser p;
+    vector<string> tokens = {"in", "%A"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 9, -1, 8}));
+}
+
+TEST(Parse, outInstruction)
+{
+    Parser p;
+    vector<string> tokens = {"out", "%A"};
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({-1, 10, -1, 8}));
+}
