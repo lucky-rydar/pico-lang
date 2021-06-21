@@ -1,5 +1,3 @@
-#define EXPECT_THROW
-
 #include "gtest/gtest.h"
 #include "LexerTests.h"
 #include "ParserTests.h"
