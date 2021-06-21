@@ -22,6 +22,20 @@ enum class Instruction
     // i/o
     In, Out, Outl,
 
+    // jump
+    Jump, // jump anyway
+    
+    // jump with condition
+    Je, // jump if equal
+    Jm, // jump if left more 
+    Jl, // jump if left less
+    Jme, // jump if left more or equal
+    Jle, // jump if left less or equal
+
+    Pass, // do nothing
+
+    Cmp, // do compare
+
     // registers
     A = -1, B = -2, C = -3, D = -4, 
     E = -5, F = -6, G = -7, H = -8
