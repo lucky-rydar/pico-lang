@@ -95,3 +95,13 @@ TEST(Executor, execDiv)
     auto state = e.getState();
     ASSERT_EQ(state.getRegVal(Instruction::A), 4);
 }
+
+TEST(Executor, popEmpty)
+{
+    Executor e;
+    
+    EXPECT_NO_THROW(e.setBytes({15, 1, 0, 1, 1, 6, 1, 2, 4, 2, -1, 10, -1, 11, 8, 4, 5, 3}));
+
+    ASSERT_NO_THROW(e.execute());
+
+}
