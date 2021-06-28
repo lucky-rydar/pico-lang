@@ -56,3 +56,7 @@ I am going to realize two main commands:
 
 * ./main compile [source-file] [executable-file]-optional
 * ./main run [executable-file]
+
+### Contributing
+
+Pull requests are welcome =)
