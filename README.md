@@ -60,3 +60,5 @@ I am going to realize two main commands:
 ### Contributing
 
 Pull requests are welcome =)
+
+It would be fine to use short commits that describe one change
