@@ -26,11 +26,12 @@ enum class Instruction
     Jump, // jump anyway
     
     // jump with condition
-    Je, // jump if equal
-    Jm, // jump if left more 
-    Jl, // jump if left less
-    Jme, // jump if left more or equal
-    Jle, // jump if left less or equal
+    Je, // jump if equal ==
+    Jm, // jump if left more > 
+    Jl, // jump if left less <
+    Jme, // jump if left more or equal >=
+    Jle, // jump if left less or equal <=
+    Jne, // jump if not equal !=
 
     Pass, // do nothing
 
