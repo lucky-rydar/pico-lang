@@ -87,6 +87,9 @@ void State::pushVal(int val)
 
 void State::popVal(Instruction reg)
 {
+    if(this->stackMem.size() == 0)
+        throw runtime_error("stack is empty");
+    
     auto topVal = this->stackMem.top();
     this->stackMem.pop();
 

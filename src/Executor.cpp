@@ -84,7 +84,14 @@ void Executor::push()
 
 void Executor::pop()
 {
-    state.popVal((Instruction)(bytes[ip + 1]));
+    try
+    {
+        state.popVal((Instruction)(bytes[ip + 1]));
+    }
+    catch(runtime_error)
+    {
+        throw runtime_error("cant pop empty stack");
+    }
     ip += 2;
 }
 
