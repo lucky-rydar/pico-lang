@@ -4,20 +4,20 @@ Parser::Parser()
 {
     this->tokens = {};
 
-    parserByToken["push"] = bind(&Parser::parsePush, this, std::placeholders::_1);
-    parserByToken["pop"] = bind(&Parser::parsePop, this, std::placeholders::_1);
-    parserByToken["set"] = bind(&Parser::parseSet, this, std::placeholders::_1);
+    parserByToken["push"] = bind(&Parser::parsePush, this);
+    parserByToken["pop"] = bind(&Parser::parsePop, this);
+    parserByToken["set"] = bind(&Parser::parseSet, this);
 
-    parserByToken["add"] = bind(&Parser::parseAdd, this, std::placeholders::_1);
-    parserByToken["sub"] = bind(&Parser::parseSub, this, std::placeholders::_1);
-    parserByToken["mul"] = bind(&Parser::parseMul, this, std::placeholders::_1);
-    parserByToken["div"] = bind(&Parser::parseDiv, this, std::placeholders::_1);
+    parserByToken["add"] = bind(&Parser::parseAdd, this);
+    parserByToken["sub"] = bind(&Parser::parseSub, this);
+    parserByToken["mul"] = bind(&Parser::parseMul, this);
+    parserByToken["div"] = bind(&Parser::parseDiv, this);
 
-    parserByToken["stop"] = bind(&Parser::parseStop, this, std::placeholders::_1);
+    parserByToken["stop"] = bind(&Parser::parseStop, this);
 
-    parserByToken["in"] = bind(&Parser::parseIn, this, std::placeholders::_1);
-    parserByToken["out"] = bind(&Parser::parseOut, this, std::placeholders::_1);
-    parserByToken["outl"] = bind(&Parser::parseOutl, this, std::placeholders::_1);
+    parserByToken["in"] = bind(&Parser::parseIn, this);
+    parserByToken["out"] = bind(&Parser::parseOut, this);
+    parserByToken["outl"] = bind(&Parser::parseOutl, this);
 
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
@@ -46,13 +46,13 @@ vector<string> Parser::getTokens()
 
 vector<int> Parser::parse()
 {
-    for(int i = 0; i < tokens.size(); )
+    for(ct = 0; ct < tokens.size(); )
     {
-        if(parserByToken.find(tokens[i]) != parserByToken.end())
+        if(parserByToken.find(tokens[ct]) != parserByToken.end())
         {
             try
             {
-                parserByToken[tokens[i]](i);
+                parserByToken[tokens[ct]]();
             }
             catch(runtime_error)
             {
@@ -61,7 +61,7 @@ vector<int> Parser::parse()
         }
         else
         {
-            throw runtime_error(string("token '") + tokens[i] + "' is not expected");
+            throw runtime_error(string("token '") + tokens[ct] + "' is not expected");
         }
     }
 
@@ -72,13 +72,13 @@ vector<int> Parser::parse()
     return bytecode.getAll();
 }
 
-void Parser::parsePush(int &index)
+void Parser::parsePush()
 { 
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range"); 
 
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
     
     bytecode.opCodes.push_back((int)Instruction::Push);
 
@@ -102,16 +102,16 @@ void Parser::parsePush(int &index)
         throw runtime_error("unknown argument '" + arg + "'");
     }
 
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parsePop(int &index)
+void Parser::parsePop()
 {
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range"); 
     
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
 
     bytecode.opCodes.push_back((int)Instruction::Pop);
 
@@ -127,18 +127,18 @@ void Parser::parsePop(int &index)
         throw runtime_error("argument '" + arg + "' is not register");
     }
 
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parseSet(int &index)
+void Parser::parseSet()
 {
-    if(index + 2 >= tokens.size())
+    if(ct + 2 >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Set);
 
-    vector<string> args = {tokens[index + 1], tokens[index + 2]};
+    vector<string> args = {tokens[ct + 1], tokens[ct + 2]};
     
     for(int i = 0; i < args.size(); i++)
     {
@@ -169,71 +169,71 @@ void Parser::parseSet(int &index)
         }
     }
 
-    index += 3;
+    ct += 3;
 }
 
-void Parser::parseAdd(int &index)
+void Parser::parseAdd()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Add);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseSub(int &index)
+void Parser::parseSub()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Sub);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseMul(int &index)
+void Parser::parseMul()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Mul);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseDiv(int &index)
+void Parser::parseDiv()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Div);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseStop(int &index)
+void Parser::parseStop()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Stop);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseIn(int& index)
+void Parser::parseIn()
 {
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
 
     bytecode.opCodes.push_back((int)Instruction::In);
 
@@ -249,16 +249,16 @@ void Parser::parseIn(int& index)
         throw runtime_error("argument '" + arg + "' is not register");
     }
 
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parseOut(int& index)
+void Parser::parseOut()
 {
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
 
     bytecode.opCodes.push_back((int)Instruction::Out);
 
@@ -274,18 +274,18 @@ void Parser::parseOut(int& index)
         throw runtime_error("argument '" + arg + "' is not register");
     }
 
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parseOutl(int& index)
+void Parser::parseOutl()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Outl);
 
-    index += 1;
+    ct += 1;
 }
 
 void Parser::ensureIntValid(string val)
