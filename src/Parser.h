@@ -2,6 +2,7 @@
 #include <functional>
 #include <iostream>
 #include <vector>
+#include <regex>
 #include <map>
 
 #include "ArgumentParser.h"
@@ -54,6 +55,8 @@ private:
     Bytecode bytecode;
 
     int ct; // current token
+
+    map<string, int> marks;
 private:
     void parsePush();
     void parsePop();
@@ -69,6 +72,8 @@ private:
     void parseIn();
     void parseOut();
     void parseOutl();
+
+    void parseMark();
 
     void processMetadata();
 

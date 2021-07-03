@@ -19,6 +19,8 @@ Parser::Parser()
     parserByToken["out"] = bind(&Parser::parseOut, this);
     parserByToken["outl"] = bind(&Parser::parseOutl, this);
 
+    parserByToken["\\w+\\:"] = bind(&Parser::parseMark, this);
+
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
     registerByToken["%C"] = Instruction::C;
@@ -57,11 +59,8 @@ vector<int> Parser::parse()
             {
                 try
                 {
-                    if(parserByToken.find(tokens[ct]) != parserByToken.end())
-                    {
-                        parserByToken.at(tokens[ct])();
-                        break;
-                    }
+                    parserByToken.at(parser->first)();
+                    break;
                 }
                 catch(runtime_error)
                 {
@@ -293,6 +292,29 @@ void Parser::parseOutl()
 
     string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Outl);
+
+    ct += 1;
+}
+
+void Parser::parseMark()
+{
+    if(ct >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+
+    regex mark_parser("(\\w+)\\:");
+    smatch parsed;
+    
+    if(regex_match(ins, parsed, mark_parser))
+    {
+        string mark = parsed[1];
+        marks[mark] = ct;
+
+        bytecode.opCodes.push_back((int)Instruction::Pass);
+    }
+    else
+        throw runtime_error("mark is not available");
 
     ct += 1;
 }
