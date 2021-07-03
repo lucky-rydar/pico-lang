@@ -60,7 +60,7 @@ TEST(Parser, parsePop2)
     ASSERT_THROW(p.parse(), runtime_error);
 }
 
-TEST(Parse, parseSet)
+TEST(Parser, parseSet)
 {
     Parser p;
     vector<string> tokens = {"set", "%A", "123"};
@@ -70,7 +70,7 @@ TEST(Parse, parseSet)
     ASSERT_EQ(res, vector<int>({5, 3, -1, 0, 8, 123}));
 }
 
-TEST(Parse, parsePushExc)
+TEST(Parser, parsePushExc)
 {
     Parser p;
     vector<string> tokens = {"push"};
@@ -79,7 +79,7 @@ TEST(Parse, parsePushExc)
     ASSERT_THROW(p.parse(), runtime_error);
 }
 
-TEST(Parse, parseSetExc)
+TEST(Parser, parseSetExc)
 {
     Parser p;
     vector<string> tokens = {"set", "12", "%B"};
@@ -91,7 +91,7 @@ TEST(Parse, parseSetExc)
     ASSERT_NO_THROW(p.parse());
 }
 
-TEST(Parse, parseAdd)
+TEST(Parser, parseAdd)
 {
     Parser p;
     vector<string> tokens = {"add"};
@@ -101,7 +101,7 @@ TEST(Parse, parseAdd)
     ASSERT_EQ(res, vector<int>({-1, 4, 8}));
 }
 
-TEST(Parse, parseSub)
+TEST(Parser, parseSub)
 {
     Parser p;
     vector<string> tokens = {"sub"};
@@ -111,7 +111,7 @@ TEST(Parse, parseSub)
     ASSERT_EQ(res, vector<int>({-1, 5, 8}));
 }
 
-TEST(Parse, parseMul)
+TEST(Parser, parseMul)
 {
     Parser p;
     vector<string> tokens = {"mul"};
@@ -121,7 +121,7 @@ TEST(Parse, parseMul)
     ASSERT_EQ(res, vector<int>({-1, 6, 8}));
 }
 
-TEST(Parse, parseDiv)
+TEST(Parser, parseDiv)
 {
     Parser p;
     vector<string> tokens = {"div"};
@@ -131,7 +131,7 @@ TEST(Parse, parseDiv)
     ASSERT_EQ(res, vector<int>({-1, 7, 8}));
 }
 
-TEST(Parse, parseStop)
+TEST(Parser, parseStop)
 {
     Parser p;
     vector<string> tokens = {"stop"};
@@ -141,7 +141,7 @@ TEST(Parse, parseStop)
     ASSERT_EQ(res, vector<int>({-1, 8, 8}));
 }
 
-TEST(Parse, multiInstruction)
+TEST(Parser, multiInstruction)
 {
     Parser p;
     vector<string> tokens = { "push", "12", "pop", "%A" };
@@ -150,7 +150,7 @@ TEST(Parse, multiInstruction)
     EXPECT_NO_THROW(p.parse());
 }
 
-TEST(Parse, inInstruction)
+TEST(Parser, inInstruction)
 {
     Parser p;
     vector<string> tokens = {"in", "%A"};
@@ -160,7 +160,7 @@ TEST(Parse, inInstruction)
     ASSERT_EQ(res, vector<int>({-1, 9, -1, 8}));
 }
 
-TEST(Parse, outInstruction)
+TEST(Parser, outInstruction)
 {
     Parser p;
     vector<string> tokens = {"out", "%A"};
@@ -170,7 +170,7 @@ TEST(Parse, outInstruction)
     ASSERT_EQ(res, vector<int>({-1, 10, -1, 8}));
 }
 
-TEST(Parse, outlInstruction)
+TEST(Parser, outlInstruction)
 {
     Parser p;
     vector<string> tokens = { "outl" };
@@ -178,4 +178,14 @@ TEST(Parse, outlInstruction)
 
     auto res = p.parse();
     ASSERT_EQ(res, vector<int>({-1, 11, 8}));
+}
+
+TEST(Parser, parseMark)
+{
+    Parser p;
+    vector<string> tokens = { "mark:" };
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    ASSERT_EQ(res, vector<int>({ -1, 19, 8 }));
 }
