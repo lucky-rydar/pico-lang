@@ -46,23 +46,32 @@ vector<string> Parser::getTokens()
 
 vector<int> Parser::parse()
 {
-    for(ct = 0; ct < tokens.size(); )
+    
+    for(ct = 0; ct < tokens.size();)
     {
-        if(parserByToken.find(tokens[ct]) != parserByToken.end())
+        auto parser = parserByToken.begin();
+        for(; parser != parserByToken.end(); parser++)
         {
-            try
+            regex reInstr(parser->first);
+            if(regex_match(tokens[ct], reInstr))
             {
-                parserByToken[tokens[ct]]();
-            }
-            catch(runtime_error)
-            {
-                throw;
+                try
+                {
+                    if(parserByToken.find(tokens[ct]) != parserByToken.end())
+                    {
+                        parserByToken.at(tokens[ct])();
+                        break;
+                    }
+                }
+                catch(runtime_error)
+                {
+                    throw;
+                }
             }
         }
-        else
-        {
+        
+        if(parser == parserByToken.end())
             throw runtime_error(string("token '") + tokens[ct] + "' is not expected");
-        }
     }
 
     bytecode.opCodes.push_back((int)Instruction::Stop);
