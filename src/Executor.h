@@ -42,4 +42,7 @@ private:
     void in();
     void out();
     void outl();
+
+    void pass();
+
 };

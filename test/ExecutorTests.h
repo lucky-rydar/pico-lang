@@ -105,3 +105,12 @@ TEST(Executor, popEmpty)
     ASSERT_NO_THROW(e.execute());
 
 }
+
+TEST(Executor, pass)
+{
+    Executor e;
+
+    EXPECT_NO_THROW(e.setBytes({-1, 19, 8}));
+
+    EXPECT_NO_THROW(e.execute());
+}

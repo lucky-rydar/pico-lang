@@ -17,6 +17,8 @@ Executor::Executor()
     instructions[Instruction::In] = std::bind(&Executor::in, this);
     instructions[Instruction::Out] = std::bind(&Executor::out, this);
     instructions[Instruction::Outl] = std::bind(&Executor::outl, this);
+
+    instructions[Instruction::Pass] = std::bind(&Executor::pass, this);
 }
 
 Executor::Executor(vector<int> bytes) : Executor()
@@ -179,6 +181,11 @@ void Executor::outl()
 {
     cout << endl;
     
+    ip += 1;
+}
+
+void Executor::pass()
+{
     ip += 1;
 }
 
