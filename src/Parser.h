@@ -74,7 +74,8 @@ private:
     void parseOutl();
 
     void parseMark();
-
+    void parsePass();
+    
     void processMetadata();
 
 public:

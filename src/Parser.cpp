@@ -20,6 +20,7 @@ Parser::Parser()
     parserByToken["outl"] = bind(&Parser::parseOutl, this);
 
     parserByToken["\\w+\\:"] = bind(&Parser::parseMark, this);
+    parserByToken["pass"] = bind(&Parser::parsePass, this);
 
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
@@ -315,6 +316,18 @@ void Parser::parseMark()
     }
     else
         throw runtime_error("mark is not available");
+
+    ct += 1;
+}
+
+void Parser::parsePass()
+{
+    if(ct >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[ct];
+
+    bytecode.opCodes.push_back((int)Instruction::Pass);
 
     ct += 1;
 }
