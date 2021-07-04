@@ -21,7 +21,8 @@ Parser::Parser()
 
     parserByToken["\\w+\\:"] = bind(&Parser::parseMark, this);
     parserByToken["pass"] = bind(&Parser::parsePass, this);
-
+    parserByToken["jump"] = bind(&Parser::parseJump, this);
+    
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
     registerByToken["%C"] = Instruction::C;
@@ -330,6 +331,28 @@ void Parser::parsePass()
     bytecode.opCodes.push_back((int)Instruction::Pass);
 
     ct += 1;
+}
+
+void Parser::parseJump()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jump);
+
+    if(marks.find(to_jump) != marks.end())
+    {
+        bytecode.opCodes.push_back(marks[to_jump]);
+    }
+    else
+    {
+        throw runtime_error("mark '" + to_jump + "' is invalid");
+    }
+    
+    ct += 2;
 }
 
 void Parser::ensureIntValid(string val)

@@ -189,3 +189,17 @@ TEST(Parser, parseMark)
     auto res = p.parse();
     ASSERT_EQ(res, vector<int>({ -1, 19, 8 }));
 }
+
+TEST(Parser, parseJump)
+{
+    Parser p;
+    vector<string> tokens = { "mark:", "push", "12", "pop", 
+                        "%A", "out", "%A", "outl", "jump", "mark" };
+
+    p.setTokens(tokens);
+
+    auto res = p.parse();
+    vector<int> expected = { 12, 19, 1, 0, 2, -1, 10, -1, 11, 12, 0, 8, 12 };
+
+    EXPECT_EQ(res, expected);
+}

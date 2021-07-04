@@ -114,3 +114,13 @@ TEST(Executor, pass)
 
     EXPECT_NO_THROW(e.execute());
 }
+
+TEST(Executor, jump)
+{
+    Executor e;
+
+    EXPECT_NO_THROW(e.setBytes(vector<int>({ 12, 19, 1, 0, 2, -1, 10, -1, 11, 12, 0, 8, 12 })));
+
+    // It works but it is infinity loop, so do not uncomment this
+    // EXPECT_NO_THROW(e.execute());
+}

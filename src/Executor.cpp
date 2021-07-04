@@ -19,6 +19,7 @@ Executor::Executor()
     instructions[Instruction::Outl] = std::bind(&Executor::outl, this);
 
     instructions[Instruction::Pass] = std::bind(&Executor::pass, this);
+    instructions[Instruction::Jump] = std::bind(&Executor::jump, this);
 }
 
 Executor::Executor(vector<int> bytes) : Executor()
@@ -187,6 +188,11 @@ void Executor::outl()
 void Executor::pass()
 {
     ip += 1;
+}
+
+void Executor::jump()
+{
+    ip = 1 + bytes[ip+1];   
 }
 
 State Executor::getState()

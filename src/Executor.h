@@ -44,5 +44,5 @@ private:
     void outl();
 
     void pass();
-
+    void jump();
 };

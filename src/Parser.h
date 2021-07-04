@@ -75,6 +75,7 @@ private:
 
     void parseMark();
     void parsePass();
+    void parseJump();
     
     void processMetadata();
 
