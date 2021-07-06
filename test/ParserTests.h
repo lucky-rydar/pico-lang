@@ -209,11 +209,22 @@ TEST(Parser, parseJump)
     l.setInput(code);
     vector<string> tokens = l.getTokens();
 
-
     p.setTokens(tokens);
 
     auto res = p.parse();
     vector<int> expected = { 19, 12, 9, 1, 0, 2, -1, 10, -1, 11, 19, 1, 1, 2, -1, 10, -1, 11, 8, 13, 12 };
 
+    EXPECT_EQ(res, expected);
+}
+
+TEST(Parser, parseCmp)
+{
+    Parser p;
+    p.setTokens({"cmp", "1", "1"});
+
+    vector<int> res;
+    EXPECT_NO_THROW(res = p.parse());
+
+    vector<int> expected = { 5, 20, 0, 1, 8, 1, 1 };
     EXPECT_EQ(res, expected);
 }
