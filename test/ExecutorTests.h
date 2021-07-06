@@ -127,3 +127,39 @@ TEST(Executor, jump)
 
     EXPECT_EQ(stateVal, 12);
 }
+
+TEST(Executor, cmpEquqls)
+{
+    Executor e;
+
+    e.setBytes(vector<int>({ 5, 20, 0, 1, 8, 1, 1 }));
+    EXPECT_NO_THROW(e.execute());
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.eq, true);
+}
+
+TEST(Executor, cmpLeftMore)
+{
+    Executor e;
+
+    e.setBytes(vector<int>({ 5, 20, 0, 1, 8, 2, 1 }));
+    EXPECT_NO_THROW(e.execute());
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.lm, true);
+}
+
+TEST(Executor, cmpRightMore)
+{
+    Executor e;
+
+    e.setBytes(vector<int>({ 5, 20, 0, 1, 8, 1, 2 }));
+    EXPECT_NO_THROW(e.execute());
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.rm, true);
+}
