@@ -45,4 +45,5 @@ private:
 
     void pass();
     void jump();
+    void cmp();
 };

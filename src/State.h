@@ -23,7 +23,7 @@ public:
     int pop();
 
     // conditional registers
-    int eq; // is equal
-    int lm; // left is more
-    int rm; // right is more
+    bool eq; // is equal
+    bool lm; // left is more
+    bool rm; // right is more
 };

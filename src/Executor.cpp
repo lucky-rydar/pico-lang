@@ -20,6 +20,7 @@ Executor::Executor()
 
     instructions[Instruction::Pass] = std::bind(&Executor::pass, this);
     instructions[Instruction::Jump] = std::bind(&Executor::jump, this);
+    instructions[Instruction::Cmp] = std::bind(&Executor::cmp, this);
 }
 
 Executor::Executor(vector<int> bytes) : Executor()
@@ -193,6 +194,18 @@ void Executor::pass()
 void Executor::jump()
 {
     ip = 1 + bytes[ip+1];   
+}
+
+void Executor::cmp()
+{
+    int arg1 = bytes[metadata.smo + bytes[ip + 1]];
+    int arg2 = bytes[metadata.smo + bytes[ip + 2]];
+
+    state.eq = (arg1 == arg2);
+    state.lm = (arg1 > arg2);
+    state.rm = (arg1 < arg2);
+
+    ip += 3;
 }
 
 State Executor::getState()
