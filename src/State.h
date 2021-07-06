@@ -20,6 +20,10 @@ public:
 
     void pushVal(int val);
     void popVal(Instruction reg);
-
     int pop();
+
+    // conditional registers
+    int eq; // is equal
+    int lm; // left is more
+    int rm; // right is more
 };
