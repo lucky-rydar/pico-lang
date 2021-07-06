@@ -22,6 +22,7 @@ Parser::Parser()
     parserByToken["\\w+\\:"] = bind(&Parser::parseMark, this);
     parserByToken["pass"] = bind(&Parser::parsePass, this);
     parserByToken["jump"] = bind(&Parser::parseJump, this);
+    parserByToken["cmp"] = bind(&Parser::parseCmp, this);
 
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
@@ -93,25 +94,7 @@ void Parser::parsePush()
     
     bytecode.opCodes.push_back((int)Instruction::Push);
 
-    if(ArgPars::isRegister(arg))
-    {
-        if(registerByToken.find(arg) == registerByToken.end())
-            throw runtime_error("there is no register '" + arg + "'");
-
-        bytecode.opCodes.push_back((int)registerByToken[arg]);
-    }
-    else if(ArgPars::isValue(arg))
-    {
-        ensureIntValid(arg);
-        int value = stoi(arg);
-        
-        bytecode.staticMem.push_back(value);
-        bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
-    }
-    else
-    {
-        throw runtime_error("unknown argument '" + arg + "'");
-    }
+    parseValRegArg(arg);
 
     ct += 2;
 }
@@ -126,17 +109,7 @@ void Parser::parsePop()
 
     bytecode.opCodes.push_back((int)Instruction::Pop);
 
-    if(ArgPars::isRegister(arg))
-    {
-        if(registerByToken.find(arg) == registerByToken.end())
-            throw runtime_error("there is no register '" + arg + "'");
-
-        bytecode.opCodes.push_back((int)registerByToken[arg]);
-    }
-    else
-    {
-        throw runtime_error("argument '" + arg + "' is not register");
-    }
+    parseRegArg(arg);
 
     ct += 2;
 }
@@ -149,36 +122,11 @@ void Parser::parseSet()
     string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Set);
 
-    vector<string> args = {tokens[ct + 1], tokens[ct + 2]};
-    
-    for(int i = 0; i < args.size(); i++)
-    {
-        if(i == 0)
-        {
-            if(!ArgPars::isRegister(args[i]))
-                throw runtime_error("first argument is not register: '" + args[i] + "'");
-        }
+    string arg1 = tokens[ct + 1];
+    string arg2 = tokens[ct + 2];
 
-        if(ArgPars::isRegister(args[i]))
-        {
-            if(registerByToken.find(args[i]) == registerByToken.end())
-                throw runtime_error("there is no register '" + args[i] + "'");
-
-            bytecode.opCodes.push_back((int)registerByToken[args[i]]);
-        }
-        else if(ArgPars::isValue(args[i]))
-        {
-            ensureIntValid(args[i]);
-            int value = stoi(args[i]);
-
-            bytecode.staticMem.push_back(value);
-            bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
-        }
-        else
-        {
-            throw runtime_error("unknown argument '" + args[i] + "'");
-        }
-    }
+    parseRegArg(arg1);
+    parseValRegArg(arg2);
 
     ct += 3;
 }
@@ -248,17 +196,7 @@ void Parser::parseIn()
 
     bytecode.opCodes.push_back((int)Instruction::In);
 
-    if(ArgPars::isRegister(arg))
-    {
-        if(registerByToken.find(arg) == registerByToken.end())
-            throw runtime_error("there is no register '" + arg + "'");
-
-        bytecode.opCodes.push_back((int)registerByToken[arg]);
-    }
-    else
-    {
-        throw runtime_error("argument '" + arg + "' is not register");
-    }
+    parseRegArg(arg);
 
     ct += 2;
 }
@@ -356,6 +294,23 @@ void Parser::parseJump()
     ct += 2;
 }
 
+void Parser::parseCmp()
+{
+    if(ct + 2 >= tokens.size())
+        throw runtime_error("out o frange");
+
+    string ins = tokens[ct];
+    string arg1 = tokens[ct + 1];
+    string arg2 = tokens[ct + 2];
+
+    bytecode.opCodes.push_back((int)Instruction::Cmp);
+
+    parseValRegArg(arg1);
+    parseValRegArg(arg2);
+
+    ct += 3;
+}
+
 void Parser::ensureIntValid(string val)
 {
     try
@@ -387,4 +342,47 @@ void Parser::processMarks()
             marks[parsed[1]] = i;
         }
     }
+}
+
+void Parser::parseValRegArg(string arg)
+{
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
+    }
+    else if(ArgPars::isValue(arg))
+    {
+        ensureIntValid(arg);
+        int value = stoi(arg);
+        
+        bytecode.staticMem.push_back(value);
+        bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
+    }
+    else
+    {
+        throw runtime_error("unknown argument '" + arg + "'");
+    }
+}
+
+void Parser::parseRegArg(string arg)
+{
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
+    }
+    else
+    {
+        throw runtime_error("argument '" + arg + "' is not register");
+    }
+}
+
+void Parser::parseValArg(string arg)
+{
+    // it can be useless
 }

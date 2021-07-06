@@ -76,10 +76,14 @@ private:
     void parseMark();
     void parsePass();
     void parseJump();
+    void parseCmp(); // means compare
 
     void processMetadata();
     void processMarks();
 
+    void parseValRegArg(string arg);
+    void parseRegArg(string arg);
+    void parseValArg(string arg);
 public:
     Parser();
     Parser(vector<string> tokens);
