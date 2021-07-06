@@ -381,9 +381,10 @@ void Parser::processMarks()
 {
     for (size_t i = 0; i < tokens.size(); i++)
     {
-        if(regex_match(tokens[i], regex("\\w+\\:")))
+        smatch parsed;
+        if(regex_match(tokens[i], parsed, regex("(\\w+)\\:")))
         {
-            marks[tokens[i]] = i;
+            marks[parsed[1]] = i;
         }
     }
 }

@@ -194,7 +194,7 @@ TEST(Parser, parseJump)
 {
     Parser p;
     string code = 
-    "jump here: "
+    "jump here "
     "push 13 "
     "pop %A "
     "out %A "
