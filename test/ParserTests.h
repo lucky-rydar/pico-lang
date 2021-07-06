@@ -193,13 +193,27 @@ TEST(Parser, parseMark)
 TEST(Parser, parseJump)
 {
     Parser p;
-    vector<string> tokens = { "mark:", "push", "12", "pop", 
-                        "%A", "out", "%A", "outl", "jump", "mark" };
+    string code = 
+    "jump here: "
+    "push 13 "
+    "pop %A "
+    "out %A "
+    "outl "
+    "here: "
+    "push 12 "
+    "pop %A "
+    "out %A "
+    "outl ";
+
+    Lexer l;
+    l.setInput(code);
+    vector<string> tokens = l.getTokens();
+
 
     p.setTokens(tokens);
 
     auto res = p.parse();
-    vector<int> expected = { 12, 19, 1, 0, 2, -1, 10, -1, 11, 12, 0, 8, 12 };
+    vector<int> expected = { 19, 12, 9, 1, 0, 2, -1, 10, -1, 11, 19, 1, 1, 2, -1, 10, -1, 11, 8, 13, 12 };
 
     EXPECT_EQ(res, expected);
 }

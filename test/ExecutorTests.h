@@ -119,8 +119,11 @@ TEST(Executor, jump)
 {
     Executor e;
 
-    EXPECT_NO_THROW(e.setBytes(vector<int>({ 12, 19, 1, 0, 2, -1, 10, -1, 11, 12, 0, 8, 12 })));
+    EXPECT_NO_THROW(e.setBytes(vector<int>({ 19, 12, 9, 1, 0, 2, -1, 10, -1, 11, 19, 1, 1, 2, -1, 10, -1, 11, 8, 13, 12 })));
 
-    // It works but it is infinity loop, so do not uncomment this
-    // EXPECT_NO_THROW(e.execute());
+    EXPECT_NO_THROW(e.execute());
+
+    auto stateVal = e.getState().getRegVal(Instruction::A);
+
+    EXPECT_EQ(stateVal, 12);
 }
