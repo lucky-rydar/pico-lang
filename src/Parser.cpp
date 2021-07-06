@@ -22,7 +22,7 @@ Parser::Parser()
     parserByToken["\\w+\\:"] = bind(&Parser::parseMark, this);
     parserByToken["pass"] = bind(&Parser::parsePass, this);
     parserByToken["jump"] = bind(&Parser::parseJump, this);
-    
+
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
     registerByToken["%C"] = Instruction::C;
@@ -50,7 +50,8 @@ vector<string> Parser::getTokens()
 
 vector<int> Parser::parse()
 {
-    
+    processMarks();
+
     for(ct = 0; ct < tokens.size();)
     {
         auto parser = parserByToken.begin();
@@ -374,4 +375,15 @@ void Parser::processMetadata()
     else
         // -1 means that static memory is not allocated
         bytecode.metaData.push_back(-1);
+}
+
+void Parser::processMarks()
+{
+    for (size_t i = 0; i < tokens.size(); i++)
+    {
+        if(regex_match(tokens[i], regex("\\w+\\:")))
+        {
+            marks[tokens[i]] = i;
+        }
+    }
 }
