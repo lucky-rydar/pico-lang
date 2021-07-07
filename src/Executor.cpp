@@ -193,7 +193,7 @@ void Executor::pass()
 
 void Executor::jump()
 {
-    ip = 1 + bytes[ip+1];   
+    ip = metadata.size + bytes[ip+1];
 }
 
 void Executor::cmp()
