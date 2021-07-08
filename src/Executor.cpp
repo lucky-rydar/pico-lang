@@ -21,6 +21,13 @@ Executor::Executor()
     instructions[Instruction::Pass] = std::bind(&Executor::pass, this);
     instructions[Instruction::Jump] = std::bind(&Executor::jump, this);
     instructions[Instruction::Cmp] = std::bind(&Executor::cmp, this);
+
+    instructions[Instruction::Je] = std::bind(&Executor::je, this);
+    instructions[Instruction::Jl] = std::bind(&Executor::jl, this);
+    instructions[Instruction::Jr] = std::bind(&Executor::jr, this);
+    instructions[Instruction::Jle] = std::bind(&Executor::jle, this);
+    instructions[Instruction::Jre] = std::bind(&Executor::jre, this);
+    instructions[Instruction::Jne] = std::bind(&Executor::jne, this);
 }
 
 Executor::Executor(vector<int> bytes) : Executor()
@@ -198,9 +205,9 @@ void Executor::jump()
 
 void Executor::cmp()
 {
-    int arg1 = bytes[metadata.smo + bytes[ip + 1]];
-    int arg2 = bytes[metadata.smo + bytes[ip + 2]];
-
+    int arg1 = getValByAddress(bytes[ip + 1]);
+    int arg2 = getValByAddress(bytes[ip + 2]);
+    
     state.eq = (arg1 == arg2);
     state.lm = (arg1 > arg2);
     state.rm = (arg1 < arg2);
@@ -208,7 +215,64 @@ void Executor::cmp()
     ip += 3;
 }
 
+void Executor::je()
+{
+    if(state.eq)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jl()
+{
+    if(state.lm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jr()
+{
+    if(state.rm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jle()
+{
+    if(state.eq || state.lm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jre()
+{
+    if(state.eq || state.rm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jne()
+{
+    if(!state.eq)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
 State Executor::getState()
 {
     return state;
+}
+
+int Executor::getValByAddress(int addr)
+{
+    if(addr < 0)
+        return state.getRegVal((Instruction)addr);
+    else
+        return bytes[metadata.smo + addr];
+    
 }

@@ -46,4 +46,13 @@ private:
     void pass();
     void jump();
     void cmp();
+
+    void je();
+    void jl();
+    void jr();
+    void jle();
+    void jre();
+    void jne();
+
+    int getValByAddress(int addr);
 };
