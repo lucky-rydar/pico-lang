@@ -28,10 +28,10 @@ enum class Instruction
     
     // jump with condition
     Je, // jump if equal ==
-    Jm, // jump if left more > 
-    Jl, // jump if left less <
-    Jme, // jump if left more or equal >=
-    Jle, // jump if left less or equal <=
+    Jl, // jump if left more > 
+    Jr, // jump if right more <
+    Jle, // jump if left more or equal >=
+    Jre, // jump if left less or equal <=
     Jne, // jump if not equal !=
 
     Pass, // do nothing
@@ -78,12 +78,20 @@ private:
     void parseJump();
     void parseCmp(); // means compare
 
+    void parseJe();
+    void parseJl();
+    void parseJr();
+    void parseJle();
+    void parseJre();
+    void parseJne();
+
     void processMetadata();
     void processMarks();
 
     void parseValRegArg(string arg);
     void parseRegArg(string arg);
     void parseValArg(string arg);
+    void parseMarkArg(string arg);
 public:
     Parser();
     Parser(vector<string> tokens);

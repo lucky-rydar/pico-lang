@@ -24,6 +24,13 @@ Parser::Parser()
     parserByToken["jump"] = bind(&Parser::parseJump, this);
     parserByToken["cmp"] = bind(&Parser::parseCmp, this);
 
+    parserByToken["je"] = bind(&Parser::parseJe, this);
+    parserByToken["jl"] = bind(&Parser::parseJl, this);
+    parserByToken["jr"] = bind(&Parser::parseJr, this);
+    parserByToken["jle"] = bind(&Parser::parseJle, this);
+    parserByToken["jre"] = bind(&Parser::parseJre, this);
+    parserByToken["jne"] = bind(&Parser::parseJne, this);
+
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
     registerByToken["%C"] = Instruction::C;
@@ -282,14 +289,7 @@ void Parser::parseJump()
     
     bytecode.opCodes.push_back((int)Instruction::Jump);
 
-    if(marks.find(to_jump) != marks.end())
-    {
-        bytecode.opCodes.push_back(marks[to_jump]);
-    }
-    else
-    {
-        throw runtime_error("mark '" + to_jump + "' is invalid");
-    }
+    parseMarkArg(to_jump);
     
     ct += 2;
 }
@@ -309,6 +309,96 @@ void Parser::parseCmp()
     parseValRegArg(arg2);
 
     ct += 3;
+}
+
+void Parser::parseJe()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Je);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJl()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jl);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJr()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jr);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJle()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jle);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJre()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jre);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJne()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jne);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
 }
 
 void Parser::ensureIntValid(string val)
@@ -385,4 +475,16 @@ void Parser::parseRegArg(string arg)
 void Parser::parseValArg(string arg)
 {
     // it can be useless
+}
+
+void Parser::parseMarkArg(string arg)
+{
+    if(marks.find(arg) != marks.end())
+    {
+        bytecode.opCodes.push_back(marks[arg]);
+    }
+    else
+    {
+        throw runtime_error("mark '" + arg + "' is invalid");
+    }
 }
