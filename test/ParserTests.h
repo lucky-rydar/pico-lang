@@ -228,3 +228,87 @@ TEST(Parser, parseCmp)
     vector<int> expected = { 5, 20, 0, 1, 8, 1, 1 };
     EXPECT_EQ(res, expected);
 }
+
+TEST(Parser, parseJe)
+{
+    string code = "cmp 1 1 je here stop here: set %A 228";
+    Lexer l;
+    l.setInput(code);
+
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    vector<int> res;
+    EXPECT_NO_THROW(res = p.parse());
+    EXPECT_EQ(res, vector<int>({ 12, 20, 0, 1, 13, 6, 8, 19, 3, -1, 2, 8, 1, 1, 228 }));
+}
+
+TEST(Parser, parseJl)
+{
+    string code = "cmp 1 1 jl here stop here: set %A 228";
+    Lexer l;
+    l.setInput(code);
+
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    vector<int> res;
+    EXPECT_NO_THROW(res = p.parse());
+    EXPECT_EQ(res, vector<int>({ 12, 20, 0, 1, 14, 6, 8, 19, 3, -1, 2, 8, 1, 1, 228 }));
+}
+
+TEST(Parser, parseJr)
+{
+    string code = "cmp 1 1 jr here stop here: set %A 228";
+    Lexer l;
+    l.setInput(code);
+
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    vector<int> res;
+    EXPECT_NO_THROW(res = p.parse());
+    EXPECT_EQ(res, vector<int>({ 12, 20, 0, 1, 15, 6, 8, 19, 3, -1, 2, 8, 1, 1, 228 }));
+}
+
+TEST(Parser, parseJle)
+{
+    string code = "cmp 1 1 jle here stop here: set %A 228";
+    Lexer l;
+    l.setInput(code);
+
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    vector<int> res;
+    EXPECT_NO_THROW(res = p.parse());
+    EXPECT_EQ(res, vector<int>({ 12, 20, 0, 1, 16, 6, 8, 19, 3, -1, 2, 8, 1, 1, 228 }));
+}
+
+TEST(Parser, parseJre)
+{
+    string code = "cmp 1 1 jre here stop here: set %A 228";
+    Lexer l;
+    l.setInput(code);
+
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    vector<int> res;
+    EXPECT_NO_THROW(res = p.parse());
+    EXPECT_EQ(res, vector<int>({ 12, 20, 0, 1, 17, 6, 8, 19, 3, -1, 2, 8, 1, 1, 228 }));
+}
+
+TEST(Parser, parseJne)
+{
+    string code = "cmp 1 1 jne here stop here: set %A 228";
+    Lexer l;
+    l.setInput(code);
+
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    vector<int> res;
+    EXPECT_NO_THROW(res = p.parse());
+    EXPECT_EQ(res, vector<int>({ 12, 20, 0, 1, 18, 6, 8, 19, 3, -1, 2, 8, 1, 1, 228 }));
+}
