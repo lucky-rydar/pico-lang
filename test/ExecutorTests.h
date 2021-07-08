@@ -163,3 +163,176 @@ TEST(Executor, cmpRightMore)
 
     EXPECT_EQ(state.rm, true);
 }
+
+TEST(Executor, je)
+{
+    string code = "cmp 1 1 je here set %A 1 stop here: set %A 2 stop";
+    Lexer l;
+    l.setInput(code);
+    
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    Executor e;
+    e.setBytes(p.parse());
+
+    e.execute();
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+}
+
+TEST(Executor, jl)
+{
+    string code = "cmp 2 1 jle here set %A 1 stop here: set %A 2 stop";
+    Lexer l;
+    l.setInput(code);
+    
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    Executor e;
+    e.setBytes(p.parse());
+
+    e.execute();
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+}
+
+TEST(Executor, jr)
+{
+    string code = "cmp 1 2 jr here set %A 1 stop here: set %A 2 stop";
+    Lexer l;
+    l.setInput(code);
+    
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    Executor e;
+    e.setBytes(p.parse());
+
+    e.execute();
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+}
+
+TEST(Executor, jle)
+{
+    {
+        string code = "cmp 2 1 jle here set %A 1 stop here: set %A 2 stop";
+        Lexer l;
+        l.setInput(code);
+
+        Parser p;
+        p.setTokens(l.getTokens());
+
+        Executor e;
+        e.setBytes(p.parse());
+
+        e.execute();
+
+        auto state = e.getState();
+
+        EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+    }
+
+    {
+        string code = "cmp 1 1 jle here set %A 1 stop here: set %A 2 stop";
+        Lexer l;
+        l.setInput(code);
+
+        Parser p;
+        p.setTokens(l.getTokens());
+
+        Executor e;
+        e.setBytes(p.parse());
+
+        e.execute();
+
+        auto state = e.getState();
+
+        EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+    }
+}
+
+TEST(Executor, jre)
+{
+    {
+        string code = "cmp 1 2 jre here set %A 1 stop here: set %A 2 stop";
+        Lexer l;
+        l.setInput(code);
+
+        Parser p;
+        p.setTokens(l.getTokens());
+
+        Executor e;
+        e.setBytes(p.parse());
+
+        e.execute();
+
+        auto state = e.getState();
+
+        EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+    }
+
+    {
+        string code = "cmp 1 1 jre here set %A 1 stop here: set %A 2 stop";
+        Lexer l;
+        l.setInput(code);
+
+        Parser p;
+        p.setTokens(l.getTokens());
+
+        Executor e;
+        e.setBytes(p.parse());
+
+        e.execute();
+
+        auto state = e.getState();
+
+        EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+    }
+}
+
+TEST(Executor, jne)
+{
+    string code = "cmp 1 2 jne here set %A 1 stop here: set %A 2 stop";
+    Lexer l;
+    l.setInput(code);
+    
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    Executor e;
+    e.setBytes(p.parse());
+
+    e.execute();
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.getRegVal(Instruction::A), 2);
+}
+
+TEST(Executor, notJump)
+{
+    string code = "cmp 1 2 je here set %A 1 stop here: set %A 2 stop";
+    Lexer l;
+    l.setInput(code);
+    
+    Parser p;
+    p.setTokens(l.getTokens());
+
+    Executor e;
+    e.setBytes(p.parse());
+
+    e.execute();
+
+    auto state = e.getState();
+
+    EXPECT_EQ(state.getRegVal(Instruction::A), 1);
+}
