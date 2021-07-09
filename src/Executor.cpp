@@ -82,14 +82,7 @@ void Executor::readMetadata()
 
 void Executor::push()
 {
-    if(bytes[ip + 1] >= 0)
-    {
-        state.pushVal(bytes[metadata.smo + bytes[ip+1]]);
-    }
-    else if(bytes[ip+1] < 0)
-    {
-        state.pushVal(state.getRegVal(Instruction(bytes[ip+1]+1)));
-    }
+    state.pushVal(this->getValByAddress(bytes[ip+1]));
     ip += 2;
 }
 
@@ -272,7 +265,7 @@ int Executor::getValByAddress(int addr)
 {
     if(addr < 0)
         return state.getRegVal((Instruction)addr);
-    else
+    else if(addr >= 0)
         return bytes[metadata.smo + addr];
-    
+    return 0;
 }
