@@ -55,4 +55,5 @@ private:
     void jne();
 
     int getValByAddress(int addr);
+    void setValByAddress(int reg_addr, int val_addr);
 };

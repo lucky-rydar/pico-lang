@@ -101,14 +101,8 @@ void Executor::pop()
 
 void Executor::set()
 {
-    if(bytes[ip + 2] >= 0)
-    {
-        state.setRegVal((Instruction)bytes[ip+1], bytes[metadata.smo + bytes[ip+2]]);
-    }
-    else if(bytes[ip+2] < 0)
-    {
-        state.setRegVal((Instruction)bytes[ip+1], state.getRegVal((Instruction)bytes[ip+1]));
-    }
+    setValByAddress(bytes[ip+1], bytes[ip+2]);
+    
     ip += 3;
 }
 
@@ -268,4 +262,9 @@ int Executor::getValByAddress(int addr)
     else if(addr >= 0)
         return bytes[metadata.smo + addr];
     return 0;
+}
+
+void Executor::setValByAddress(int reg_addr, int val_addr)
+{
+    state.setRegVal((Instruction)reg_addr, getValByAddress(val_addr));
 }
