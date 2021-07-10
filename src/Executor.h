@@ -42,4 +42,18 @@ private:
     void in();
     void out();
     void outl();
+
+    void pass();
+    void jump();
+    void cmp();
+
+    void je();
+    void jl();
+    void jr();
+    void jle();
+    void jre();
+    void jne();
+
+    int getValByAddress(int addr);
+    void setValByAddress(int reg_addr, int val_addr);
 };

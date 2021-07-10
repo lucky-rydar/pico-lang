@@ -2,6 +2,7 @@
 #include <functional>
 #include <iostream>
 #include <vector>
+#include <regex>
 #include <map>
 
 #include "ArgumentParser.h"
@@ -26,11 +27,12 @@ enum class Instruction
     Jump, // jump anyway
     
     // jump with condition
-    Je, // jump if equal
-    Jm, // jump if left more 
-    Jl, // jump if left less
-    Jme, // jump if left more or equal
-    Jle, // jump if left less or equal
+    Je, // jump if equal ==
+    Jl, // jump if left more > 
+    Jr, // jump if right more <
+    Jle, // jump if left more or equal >=
+    Jre, // jump if left less or equal <=
+    Jne, // jump if not equal !=
 
     Pass, // do nothing
 
@@ -48,28 +50,48 @@ private:
     vector<string> tokens;
     
     map<string, Instruction> registerByToken;
-    map<string, function<void(int &index)>> parserByToken;
+    map<string, function<void()>> parserByToken;
     
     Bytecode bytecode;
 
+    int ct; // current token
+
+    map<string, int> marks;
 private:
-    void parsePush(int &index);
-    void parsePop(int &index);
-    void parseSet(int &index);
+    void parsePush();
+    void parsePop();
+    void parseSet();
     
-    void parseAdd(int &index);
-    void parseSub(int &index);
-    void parseMul(int &index);
-    void parseDiv(int &index);
+    void parseAdd();
+    void parseSub();
+    void parseMul();
+    void parseDiv();
 
-    void parseStop(int &index);
+    void parseStop();
 
-    void parseIn(int& index);
-    void parseOut(int& index);
-    void parseOutl(int& index);
+    void parseIn();
+    void parseOut();
+    void parseOutl();
+
+    void parseMark();
+    void parsePass();
+    void parseJump();
+    void parseCmp(); // means compare
+
+    void parseJe();
+    void parseJl();
+    void parseJr();
+    void parseJle();
+    void parseJre();
+    void parseJne();
 
     void processMetadata();
+    void processMarks();
 
+    void parseValRegArg(string arg);
+    void parseRegArg(string arg);
+    void parseValArg(string arg);
+    void parseMarkArg(string arg);
 public:
     Parser();
     Parser(vector<string> tokens);

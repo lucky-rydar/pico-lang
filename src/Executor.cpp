@@ -17,6 +17,17 @@ Executor::Executor()
     instructions[Instruction::In] = std::bind(&Executor::in, this);
     instructions[Instruction::Out] = std::bind(&Executor::out, this);
     instructions[Instruction::Outl] = std::bind(&Executor::outl, this);
+
+    instructions[Instruction::Pass] = std::bind(&Executor::pass, this);
+    instructions[Instruction::Jump] = std::bind(&Executor::jump, this);
+    instructions[Instruction::Cmp] = std::bind(&Executor::cmp, this);
+
+    instructions[Instruction::Je] = std::bind(&Executor::je, this);
+    instructions[Instruction::Jl] = std::bind(&Executor::jl, this);
+    instructions[Instruction::Jr] = std::bind(&Executor::jr, this);
+    instructions[Instruction::Jle] = std::bind(&Executor::jle, this);
+    instructions[Instruction::Jre] = std::bind(&Executor::jre, this);
+    instructions[Instruction::Jne] = std::bind(&Executor::jne, this);
 }
 
 Executor::Executor(vector<int> bytes) : Executor()
@@ -71,14 +82,7 @@ void Executor::readMetadata()
 
 void Executor::push()
 {
-    if(bytes[ip + 1] >= 0)
-    {
-        state.pushVal(bytes[metadata.smo + bytes[ip+1]]);
-    }
-    else if(bytes[ip+1] < 0)
-    {
-        state.pushVal(state.getRegVal(Instruction(bytes[ip+1]+1)));
-    }
+    state.pushVal(this->getValByAddress(bytes[ip+1]));
     ip += 2;
 }
 
@@ -97,14 +101,8 @@ void Executor::pop()
 
 void Executor::set()
 {
-    if(bytes[ip + 2] >= 0)
-    {
-        state.setRegVal((Instruction)bytes[ip+1], bytes[metadata.smo + bytes[ip+2]]);
-    }
-    else if(bytes[ip+2] < 0)
-    {
-        state.setRegVal((Instruction)bytes[ip+1], state.getRegVal((Instruction)bytes[ip+1]));
-    }
+    setValByAddress(bytes[ip+1], bytes[ip+2]);
+    
     ip += 3;
 }
 
@@ -182,7 +180,91 @@ void Executor::outl()
     ip += 1;
 }
 
+void Executor::pass()
+{
+    ip += 1;
+}
+
+void Executor::jump()
+{
+    ip = metadata.size + bytes[ip+1];
+}
+
+void Executor::cmp()
+{
+    int arg1 = getValByAddress(bytes[ip + 1]);
+    int arg2 = getValByAddress(bytes[ip + 2]);
+    
+    state.eq = (arg1 == arg2);
+    state.lm = (arg1 > arg2);
+    state.rm = (arg1 < arg2);
+
+    ip += 3;
+}
+
+void Executor::je()
+{
+    if(state.eq)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jl()
+{
+    if(state.lm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jr()
+{
+    if(state.rm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jle()
+{
+    if(state.eq || state.lm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jre()
+{
+    if(state.eq || state.rm)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
+void Executor::jne()
+{
+    if(!state.eq)
+        ip = metadata.size + bytes[ip+1];
+    else
+        ip += 2;
+}
+
 State Executor::getState()
 {
     return state;
+}
+
+int Executor::getValByAddress(int addr)
+{
+    if(addr < 0)
+        return state.getRegVal((Instruction)addr);
+    else if(addr >= 0)
+        return bytes[metadata.smo + addr];
+    return 0;
+}
+
+void Executor::setValByAddress(int reg_addr, int val_addr)
+{
+    state.setRegVal((Instruction)reg_addr, getValByAddress(val_addr));
 }

@@ -4,20 +4,32 @@ Parser::Parser()
 {
     this->tokens = {};
 
-    parserByToken["push"] = bind(&Parser::parsePush, this, std::placeholders::_1);
-    parserByToken["pop"] = bind(&Parser::parsePop, this, std::placeholders::_1);
-    parserByToken["set"] = bind(&Parser::parseSet, this, std::placeholders::_1);
+    parserByToken["push"] = bind(&Parser::parsePush, this);
+    parserByToken["pop"] = bind(&Parser::parsePop, this);
+    parserByToken["set"] = bind(&Parser::parseSet, this);
 
-    parserByToken["add"] = bind(&Parser::parseAdd, this, std::placeholders::_1);
-    parserByToken["sub"] = bind(&Parser::parseSub, this, std::placeholders::_1);
-    parserByToken["mul"] = bind(&Parser::parseMul, this, std::placeholders::_1);
-    parserByToken["div"] = bind(&Parser::parseDiv, this, std::placeholders::_1);
+    parserByToken["add"] = bind(&Parser::parseAdd, this);
+    parserByToken["sub"] = bind(&Parser::parseSub, this);
+    parserByToken["mul"] = bind(&Parser::parseMul, this);
+    parserByToken["div"] = bind(&Parser::parseDiv, this);
 
-    parserByToken["stop"] = bind(&Parser::parseStop, this, std::placeholders::_1);
+    parserByToken["stop"] = bind(&Parser::parseStop, this);
 
-    parserByToken["in"] = bind(&Parser::parseIn, this, std::placeholders::_1);
-    parserByToken["out"] = bind(&Parser::parseOut, this, std::placeholders::_1);
-    parserByToken["outl"] = bind(&Parser::parseOutl, this, std::placeholders::_1);
+    parserByToken["in"] = bind(&Parser::parseIn, this);
+    parserByToken["out"] = bind(&Parser::parseOut, this);
+    parserByToken["outl"] = bind(&Parser::parseOutl, this);
+
+    parserByToken["\\w+\\:"] = bind(&Parser::parseMark, this);
+    parserByToken["pass"] = bind(&Parser::parsePass, this);
+    parserByToken["jump"] = bind(&Parser::parseJump, this);
+    parserByToken["cmp"] = bind(&Parser::parseCmp, this);
+
+    parserByToken["je"] = bind(&Parser::parseJe, this);
+    parserByToken["jl"] = bind(&Parser::parseJl, this);
+    parserByToken["jr"] = bind(&Parser::parseJr, this);
+    parserByToken["jle"] = bind(&Parser::parseJle, this);
+    parserByToken["jre"] = bind(&Parser::parseJre, this);
+    parserByToken["jne"] = bind(&Parser::parseJne, this);
 
     registerByToken["%A"] = Instruction::A;
     registerByToken["%B"] = Instruction::B;
@@ -46,23 +58,30 @@ vector<string> Parser::getTokens()
 
 vector<int> Parser::parse()
 {
-    for(int i = 0; i < tokens.size(); )
+    processMarks();
+
+    for(ct = 0; ct < tokens.size();)
     {
-        if(parserByToken.find(tokens[i]) != parserByToken.end())
+        auto parser = parserByToken.begin();
+        for(; parser != parserByToken.end(); parser++)
         {
-            try
+            regex reInstr(parser->first);
+            if(regex_match(tokens[ct], reInstr))
             {
-                parserByToken[tokens[i]](i);
-            }
-            catch(runtime_error)
-            {
-                throw;
+                try
+                {
+                    parserByToken.at(parser->first)();
+                    break;
+                }
+                catch(runtime_error)
+                {
+                    throw;
+                }
             }
         }
-        else
-        {
-            throw runtime_error(string("token '") + tokens[i] + "' is not expected");
-        }
+        
+        if(parser == parserByToken.end())
+            throw runtime_error(string("token '") + tokens[ct] + "' is not expected");
     }
 
     bytecode.opCodes.push_back((int)Instruction::Stop);
@@ -72,193 +91,130 @@ vector<int> Parser::parse()
     return bytecode.getAll();
 }
 
-void Parser::parsePush(int &index)
+void Parser::parsePush()
 { 
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range"); 
 
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
     
     bytecode.opCodes.push_back((int)Instruction::Push);
 
-    if(ArgPars::isRegister(arg))
-    {
-        if(registerByToken.find(arg) == registerByToken.end())
-            throw runtime_error("there is no register '" + arg + "'");
+    parseValRegArg(arg);
 
-        bytecode.opCodes.push_back((int)registerByToken[arg]);
-    }
-    else if(ArgPars::isValue(arg))
-    {
-        ensureIntValid(arg);
-        int value = stoi(arg);
-        
-        bytecode.staticMem.push_back(value);
-        bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
-    }
-    else
-    {
-        throw runtime_error("unknown argument '" + arg + "'");
-    }
-
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parsePop(int &index)
+void Parser::parsePop()
 {
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range"); 
     
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
 
     bytecode.opCodes.push_back((int)Instruction::Pop);
 
-    if(ArgPars::isRegister(arg))
-    {
-        if(registerByToken.find(arg) == registerByToken.end())
-            throw runtime_error("there is no register '" + arg + "'");
+    parseRegArg(arg);
 
-        bytecode.opCodes.push_back((int)registerByToken[arg]);
-    }
-    else
-    {
-        throw runtime_error("argument '" + arg + "' is not register");
-    }
-
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parseSet(int &index)
+void Parser::parseSet()
 {
-    if(index + 2 >= tokens.size())
+    if(ct + 2 >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Set);
 
-    vector<string> args = {tokens[index + 1], tokens[index + 2]};
-    
-    for(int i = 0; i < args.size(); i++)
-    {
-        if(i == 0)
-        {
-            if(!ArgPars::isRegister(args[i]))
-                throw runtime_error("first argument is not register: '" + args[i] + "'");
-        }
+    string arg1 = tokens[ct + 1];
+    string arg2 = tokens[ct + 2];
 
-        if(ArgPars::isRegister(args[i]))
-        {
-            if(registerByToken.find(args[i]) == registerByToken.end())
-                throw runtime_error("there is no register '" + args[i] + "'");
+    parseRegArg(arg1);
+    parseValRegArg(arg2);
 
-            bytecode.opCodes.push_back((int)registerByToken[args[i]]);
-        }
-        else if(ArgPars::isValue(args[i]))
-        {
-            ensureIntValid(args[i]);
-            int value = stoi(args[i]);
-
-            bytecode.staticMem.push_back(value);
-            bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
-        }
-        else
-        {
-            throw runtime_error("unknown argument '" + args[i] + "'");
-        }
-    }
-
-    index += 3;
+    ct += 3;
 }
 
-void Parser::parseAdd(int &index)
+void Parser::parseAdd()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Add);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseSub(int &index)
+void Parser::parseSub()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Sub);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseMul(int &index)
+void Parser::parseMul()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Mul);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseDiv(int &index)
+void Parser::parseDiv()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Div);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseStop(int &index)
+void Parser::parseStop()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Stop);
 
-    index += 1;
+    ct += 1;
 }
 
-void Parser::parseIn(int& index)
+void Parser::parseIn()
 {
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
 
     bytecode.opCodes.push_back((int)Instruction::In);
 
-    if(ArgPars::isRegister(arg))
-    {
-        if(registerByToken.find(arg) == registerByToken.end())
-            throw runtime_error("there is no register '" + arg + "'");
+    parseRegArg(arg);
 
-        bytecode.opCodes.push_back((int)registerByToken[arg]);
-    }
-    else
-    {
-        throw runtime_error("argument '" + arg + "' is not register");
-    }
-
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parseOut(int& index)
+void Parser::parseOut()
 {
-    if(index + 1 >= tokens.size())
+    if(ct + 1 >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
-    string arg = tokens[index+1];
+    string ins = tokens[ct];
+    string arg = tokens[ct+1];
 
     bytecode.opCodes.push_back((int)Instruction::Out);
 
@@ -274,18 +230,175 @@ void Parser::parseOut(int& index)
         throw runtime_error("argument '" + arg + "' is not register");
     }
 
-    index += 2;
+    ct += 2;
 }
 
-void Parser::parseOutl(int& index)
+void Parser::parseOutl()
 {
-    if(index >= tokens.size())
+    if(ct >= tokens.size())
         throw runtime_error("out of range");
 
-    string ins = tokens[index];
+    string ins = tokens[ct];
     bytecode.opCodes.push_back((int)Instruction::Outl);
 
-    index += 1;
+    ct += 1;
+}
+
+void Parser::parseMark()
+{
+    if(ct >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+
+    regex mark_parser("(\\w+)\\:");
+    smatch parsed;
+    
+    if(regex_match(ins, parsed, mark_parser))
+    {
+        string mark = parsed[1];
+        marks[mark] = ct;
+
+        bytecode.opCodes.push_back((int)Instruction::Pass);
+    }
+    else
+        throw runtime_error("mark is not available");
+
+    ct += 1;
+}
+
+void Parser::parsePass()
+{
+    if(ct >= tokens.size())
+        throw runtime_error("out of range");
+
+    string ins = tokens[ct];
+
+    bytecode.opCodes.push_back((int)Instruction::Pass);
+
+    ct += 1;
+}
+
+void Parser::parseJump()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jump);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseCmp()
+{
+    if(ct + 2 >= tokens.size())
+        throw runtime_error("out o frange");
+
+    string ins = tokens[ct];
+    string arg1 = tokens[ct + 1];
+    string arg2 = tokens[ct + 2];
+
+    bytecode.opCodes.push_back((int)Instruction::Cmp);
+
+    parseValRegArg(arg1);
+    parseValRegArg(arg2);
+
+    ct += 3;
+}
+
+void Parser::parseJe()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Je);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJl()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jl);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJr()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jr);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJle()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jle);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJre()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jre);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
+}
+
+void Parser::parseJne()
+{
+    if(ct + 1 >= tokens.size())
+        throw runtime_error("out of range");
+    
+    string ins = tokens[ct];
+    string to_jump = tokens[ct+1];
+    
+    bytecode.opCodes.push_back((int)Instruction::Jne);
+
+    parseMarkArg(to_jump);
+    
+    ct += 2;
 }
 
 void Parser::ensureIntValid(string val)
@@ -307,4 +420,71 @@ void Parser::processMetadata()
     else
         // -1 means that static memory is not allocated
         bytecode.metaData.push_back(-1);
+}
+
+void Parser::processMarks()
+{
+    for (size_t i = 0; i < tokens.size(); i++)
+    {
+        smatch parsed;
+        if(regex_match(tokens[i], parsed, regex("(\\w+)\\:")))
+        {
+            marks[parsed[1]] = i;
+        }
+    }
+}
+
+void Parser::parseValRegArg(string arg)
+{
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
+    }
+    else if(ArgPars::isValue(arg))
+    {
+        ensureIntValid(arg);
+        int value = stoi(arg);
+        
+        bytecode.staticMem.push_back(value);
+        bytecode.opCodes.push_back(bytecode.staticMem.size() - 1);
+    }
+    else
+    {
+        throw runtime_error("unknown argument '" + arg + "'");
+    }
+}
+
+void Parser::parseRegArg(string arg)
+{
+    if(ArgPars::isRegister(arg))
+    {
+        if(registerByToken.find(arg) == registerByToken.end())
+            throw runtime_error("there is no register '" + arg + "'");
+
+        bytecode.opCodes.push_back((int)registerByToken[arg]);
+    }
+    else
+    {
+        throw runtime_error("argument '" + arg + "' is not register");
+    }
+}
+
+void Parser::parseValArg(string arg)
+{
+    // it can be useless
+}
+
+void Parser::parseMarkArg(string arg)
+{
+    if(marks.find(arg) != marks.end())
+    {
+        bytecode.opCodes.push_back(marks[arg]);
+    }
+    else
+    {
+        throw runtime_error("mark '" + arg + "' is invalid");
+    }
 }
