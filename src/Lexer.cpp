@@ -41,10 +41,16 @@ vector<string> Lexer::getTokens()
     if(input == "")
         return {};
     
+    int notSpaceIdx = 0;
+    for( ; input[notSpaceIdx] == ' ' || input[notSpaceIdx] == '\n' || 
+            input[notSpaceIdx] == '\r' || input[notSpaceIdx] == '\t'; notSpaceIdx++);
+
+    string cut(input.begin() + notSpaceIdx, input.end());
+
     regex delimiterRegex(delimiter);
     vector<string> res;
     
-    copy(sregex_token_iterator(input.begin(), input.end(), delimiterRegex, -1),
+    copy(sregex_token_iterator(cut.begin(), cut.end(), delimiterRegex, -1),
         sregex_token_iterator(),
         back_inserter(res));
     

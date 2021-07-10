@@ -312,3 +312,18 @@ TEST(Parser, parseJne)
     EXPECT_NO_THROW(res = p.parse());
     EXPECT_EQ(res, vector<int>({ 12, 20, 0, 1, 18, 6, 8, 19, 3, -1, 2, 8, 1, 1, 228 }));
 }
+
+TEST(Parser, firstEmpty)
+{
+    string code = "\n set %A 12 out %A outl";
+    Lexer l;
+    l.setInput(code);
+
+    vector<string> tokens;
+    ASSERT_NO_THROW(tokens = l.getTokens());
+
+    Parser p;
+    p.setTokens(tokens);
+    vector<int> bytes;
+    ASSERT_NO_THROW(bytes = p.parse());
+}
