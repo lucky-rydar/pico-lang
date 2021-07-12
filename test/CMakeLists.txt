@@ -27,7 +27,7 @@ add_custom_command(
      COMMAND ${UNIT_TEST}
 )
 
-set(GCOVR_SCRIPT sh ../../scripts/gcovr.sh cmake)
+set(GCOVR_SCRIPT sh ../../scripts/gcovr.sh)
 
 add_custom_command(
      TARGET ${UNIT_TEST}

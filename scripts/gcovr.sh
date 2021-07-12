@@ -1,12 +1,8 @@
 
-if [ $# -eq 0 ]
-then
-    path=".."
-elif [ "$1" == "cmake" ]
-then
-    path="../.."
-fi
+script_dir=$(realpath $0)
+dir=$(dirname $script_dir)
+echo "$dir"
+cd $dir/..
 
-
-gcovr -r "$path/." --filter "$path/src/" --exclude "$path/src/main.cpp"
-gcovr -r "$path/." --filter "$path/src/" --exclude "$path/src/main.cpp" --html -o ../cov_report.html
+gcovr -r . --filter src/. --exclude src/main.cpp
+gcovr -r . --filter src/. --exclude src/main.cpp --html -o ../cov_report.html
