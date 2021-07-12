@@ -2,6 +2,9 @@ set(BINARY gTest)
 
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
 
+# for gcov
+SET(CMAKE_CXX_FLAGS  "-g -O0 -fprofile-arcs -ftest-coverage")
+
 set(SOURCES ${TEST_SOURCES})
 
 set(SRC_DIR "../src")
@@ -22,4 +25,16 @@ add_custom_command(
      COMMENT "Running tests"
      POST_BUILD 
      COMMAND ${UNIT_TEST}
+)
+
+set(GCOV_TERMINAL gcovr -r ../../. --filter ../../src/ --exclude ../../src/main.cpp)
+set(GCOV_HTML gcovr -r ../../. --filter ../../src/ --exclude ../../src/main.cpp --html -o ../cov_report.html)
+
+add_custom_command(
+     TARGET ${UNIT_TEST}
+     COMMENT "Gcovr running..."
+     POST_BUILD
+     COMMAND pwd
+     COMMAND ${GCOV_TERMINAL}
+     COMMAND ${GCOV_HTML}
 )

@@ -3,6 +3,9 @@ project(pico-lang)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# for gcov
+SET(CMAKE_CXX_FLAGS  "-g -O0 -fprofile-arcs -ftest-coverage")
+
 include_directories(src)
 
 add_subdirectory(test)
