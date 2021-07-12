@@ -27,14 +27,11 @@ add_custom_command(
      COMMAND ${UNIT_TEST}
 )
 
-set(GCOV_TERMINAL gcovr -r ../../. --filter ../../src/ --exclude ../../src/main.cpp)
-set(GCOV_HTML gcovr -r ../../. --filter ../../src/ --exclude ../../src/main.cpp --html -o ../cov_report.html)
+set(GCOVR_SCRIPT sh ../../scripts/gcovr.sh cmake)
 
 add_custom_command(
      TARGET ${UNIT_TEST}
      COMMENT "Gcovr running..."
      POST_BUILD
-     COMMAND pwd
-     COMMAND ${GCOV_TERMINAL}
-     COMMAND ${GCOV_HTML}
+     COMMAND ${GCOVR_SCRIPT}
 )
