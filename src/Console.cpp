@@ -62,13 +62,6 @@ void Console::run(vector<string> params)
     
     Executor e;
     e.setBytes(bytes);
-
-    try
-    {
-        e.execute();
-    }
-    catch(runtime_error)
-    {
-        throw;
-    }
+    
+    e.execute();
 }
