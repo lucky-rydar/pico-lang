@@ -19,8 +19,7 @@ void Console::process(vector<string> command)
     }
     else
     {
-        if(command.size() >= 2)
-            commands[command[0]](vector<string>(command.begin() + 1, command.end()));
+        commands[command[0]](vector<string>(command.begin() + 1, command.end()));
     }
 }
 
@@ -38,14 +37,8 @@ void Console::compile(vector<string> params)
         executable = params[1];
     
     string code;
-    try
-    {
-        code = FileReader::readAsText(source);    
-    }
-    catch(runtime_error)
-    {
-        throw;
-    }
+    code = FileReader::readAsText(source);    
+    
     
     Lexer l(code);
     auto tokens = l.getTokens();
@@ -65,14 +58,7 @@ void Console::run(vector<string> params)
     string executable = params[0];
 
     vector<int> bytes;
-    try
-    {
-        bytes = FileReader::readAsBytes(executable);    
-    }
-    catch(runtime_error)
-    {
-        throw;
-    }
+    bytes = FileReader::readAsBytes(executable);    
     
     Executor e;
     e.setBytes(bytes);

@@ -5,7 +5,7 @@ TEST(Console, processExc)
 {
     Console c;
     auto command1 = vector<string>({"compile"});
-    EXPECT_NO_THROW(c.process(command1));
+    EXPECT_THROW(c.process(command1), runtime_error);
     
     auto command2 = vector<string>({"hello"});
     EXPECT_THROW(c.process(command2), std::runtime_error);
@@ -100,4 +100,24 @@ TEST(Console, processMultiline)
 
     remove(execFile.c_str());
     remove(sourceFile.c_str());
+}
+
+TEST(Console, compileTestSizeException)
+{
+    Console c;
+
+    ASSERT_THROW(c.process(vector<string>({"compile"})), runtime_error);
+}
+
+TEST(Console, runTestSizeException)
+{
+    Console c;
+
+    ASSERT_THROW(c.process(vector<string>({"run"})), runtime_error);
+}
+
+TEST(Console, compileTwoParams)
+{
+    Console c;
+    ASSERT_THROW(c.process({"compile", "main.pls", "a.ple"}), runtime_error);   
 }
