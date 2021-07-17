@@ -1,5 +1,18 @@
 #include "Executor.h"
 
+TEST(Executor, ExecutorSetBytes)
+{
+    vector<int> expected({1, 2, 3});
+    Executor e(expected);
+    ASSERT_EQ(e.getBytes(), expected);
+}
+
+TEST(Executor, executeEmpty)
+{
+    Executor e;
+    ASSERT_NO_THROW(e.execute());
+}
+
 TEST(Executor, getState)
 {
     Executor e;
