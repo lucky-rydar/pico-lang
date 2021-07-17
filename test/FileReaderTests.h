@@ -36,3 +36,17 @@ TEST(FileReader, readAsBytes)
 
     remove(filename.c_str());
 }
+
+TEST(FileReader, invalidBytesInFile)
+{
+    string filename = "src.pls";
+    string text = "123 ghg 12";
+    
+    ofstream f(filename);
+    f << text << endl;
+    f.close();
+
+    EXPECT_THROW(FileReader::readAsBytes(filename), runtime_error);
+
+    remove(filename.c_str());
+}
