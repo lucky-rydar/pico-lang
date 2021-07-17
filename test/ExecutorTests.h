@@ -13,6 +13,24 @@ TEST(Executor, executeEmpty)
     ASSERT_NO_THROW(e.execute());
 }
 
+TEST(Executor, instrException)
+{
+    string code = "pop %A";
+    Lexer l(code);
+    Parser p(l.getTokens());
+
+    Executor e(p.parse());
+    EXPECT_THROW(e.execute(), runtime_error);
+}
+
+TEST(Executor, cantRunInstrExc)
+{
+    Executor e;
+    e.setBytes({-1, -432678});
+
+    EXPECT_THROW(e.execute(), runtime_error);
+}
+
 TEST(Executor, getState)
 {
     Executor e;
