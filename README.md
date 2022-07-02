@@ -73,6 +73,49 @@ I am going to realize two main commands:
 * ./main compile [source-file] [executable-file]-optional
 * ./main run [executable-file]
 
+## Example code
+
+The programm belove print numbers in range from 1 to 10
+
+```
+main:
+  push 0
+  set %B 10
+
+while_condition:
+  pop %A
+  push %A
+  cmp %A %B
+  jr while
+  jle end
+
+while:
+  push 1
+  add
+  pop %A
+  push %A
+  out %A
+  outl
+  jump while_condition
+
+end:
+  stop
+```
+
+Output:
+```
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
 ## Contributing
 
 Pull requests are welcome =)
