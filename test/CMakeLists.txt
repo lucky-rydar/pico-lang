@@ -20,18 +20,26 @@ target_link_libraries(${BINARY} PUBLIC ${CMAKE_PROJECT_NAME}_lib gtest)
 
 set(UNIT_TEST ${BINARY})
 
-add_custom_command(
-     TARGET ${UNIT_TEST}
-     COMMENT "Running tests"
-     POST_BUILD 
-     COMMAND ${UNIT_TEST}
-)
+if (NOT DEFINED GTEST_IGNORE)
+     add_custom_command(
+          TARGET ${UNIT_TEST}
+          COMMENT "Running tests"
+          POST_BUILD 
+          COMMAND ${UNIT_TEST}
+     )
+else()
+     message("Gtest ignore")
+endif()
 
 set(GCOVR_SCRIPT sh ../../scripts/gcovr.sh)
 
-add_custom_command(
-     TARGET ${UNIT_TEST}
-     COMMENT "Gcovr running..."
-     POST_BUILD
-     COMMAND ${GCOVR_SCRIPT}
-)
+if (NOT DEFINED GCOVR_IGNORE)
+     add_custom_command(
+          TARGET ${UNIT_TEST}
+          COMMENT "Gcovr running..."
+          POST_BUILD
+          COMMAND ${GCOVR_SCRIPT}
+     )
+else()
+     message("Gcovr ignore")
+endif()
